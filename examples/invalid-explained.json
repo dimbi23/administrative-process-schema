@@ -1,0 +1,55 @@
+{
+  "_comment": "Intentionally invalid example to demonstrate rule failures BR-001/BR-004/BR-005",
+  "schemaVersion": "2.0.0",
+  "generatedAt": "2026-03-22T17:00:00Z",
+  "serviceId": "MID-EXAMPLE-003",
+  "name": "Procédure invalide de démonstration",
+  "status": "active",
+  "owner": {
+    "ministry": "MID"
+  },
+  "workflow": {
+    "schemaVersion": "2.0.0",
+    "version": "v2",
+    "generatedAt": "2026-03-22T17:00:00Z",
+    "steps": [
+      {
+        "stepId": "step_1",
+        "order": 1,
+        "label": "Étape sans libellé (1)",
+        "stepType": "submission",
+        "confidence": "manual_required",
+        "qualityFlags": ["missing_label_autofilled"]
+      }
+    ],
+    "sourceRaw": "Source brute",
+    "normalizationConfidence": "manual_required",
+    "reviewStatus": "manual_required"
+  },
+  "fee": {
+    "schemaVersion": "2.0.0",
+    "generatedAt": "2026-03-22T17:00:00Z",
+    "currency": "MGA",
+    "model": "fixed",
+    "rules": [
+      {
+        "ruleId": "rule_fixed_1",
+        "type": "fixed",
+        "amount": 2500,
+        "confidence": "high"
+      }
+    ],
+    "summary": {
+      "isConditional": false,
+      "minAmount": 2500,
+      "maxAmount": 2500,
+      "defaultAmount": 2500,
+      "ruleCount": 2
+    }
+  },
+  "_fails": [
+    "BR-004 placeholder label in public profile",
+    "BR-008 manual_required reviewStatus not publishable",
+    "BR-005 fee.summary.ruleCount mismatch"
+  ]
+}

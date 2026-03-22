@@ -2,33 +2,19 @@
 
 ## 4.1 Objective
 
-Define strict rules for records exposed in public portal/API.
+This section defines the publishability policy for records exposed through public portals and APIs.
 
 ## 4.2 Mandatory publication checks
 
-A record is publishable only if:
-1. structural validation passes,
-2. workflow is non-empty,
-3. no placeholder labels,
-4. no blocking quality flags,
-5. review status is publishable,
-6. fee model is coherent with rules.
+A record is publishable only when structural validation passes, the workflow is non-empty, workflow labels are not placeholders, no blocking quality conditions remain unresolved, review status is in a publishable state, and the fee model is coherent with its rules.
 
 ## 4.3 Blocking quality conditions
 
-By default, these conditions are blocking:
-- empty workflow,
-- unresolved manual-required workflow,
-- invalid step ordering,
-- invalid fee rule structure,
-- unresolved critical document requirement ambiguity.
+By default, publication is blocked for empty workflows, unresolved manual-required workflow states, invalid step ordering, invalid fee rule structures, and unresolved critical ambiguity in document requirements.
 
 ## 4.4 Non-blocking conditions
 
-These MAY be published with warning (policy-controlled):
-- missing non-critical optional metadata,
-- unknown channel with manual review note,
-- incomplete support contact details.
+Some conditions MAY be published with warnings according to policy. Typical examples include missing non-critical optional metadata, an unknown channel accompanied by a manual review note, or incomplete support contact details.
 
 ## 4.5 Publication checklist
 
@@ -40,8 +26,4 @@ These MAY be published with warning (policy-controlled):
 
 ## 4.6 Traceability requirements
 
-Published records SHOULD maintain traceability metadata:
-- generation timestamp,
-- source reference,
-- parser/version reference,
-- review decision reference.
+Published records SHOULD preserve traceability metadata, including generation timestamp, source reference, parser/version reference, and review decision reference.

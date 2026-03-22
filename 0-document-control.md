@@ -8,31 +8,18 @@
 
 ## 0.1 Objective
 
-This specification defines a national, machine-readable standard for administrative procedures.
+This specification defines a national, machine-readable contract for administrative procedures. It establishes how procedure semantics are represented, validated, published, and consumed across public systems.
 
-For years, digital government modernization mostly reproduced paper bureaucracy on screens: forms became web forms, offices became portals, and citizens remained the manual bridge across disconnected systems.
-
-That portal-first paradigm is no longer sufficient.
-
-Public services now need to be consumable not only by humans through UI, but by systems and software agents through explicit contracts. This standard provides that contract.
-
-In practical architectural terms:
-- procedure semantics MUST be explicit and versioned,
-- publication contracts MUST be machine-validated,
-- orchestration engines MUST execute canonical semantics rather than redefine them.
+The objective is to make procedure definitions explicit, stable, and reusable. A procedure definition MUST be versioned, publication payloads MUST be machine-validated, and orchestration engines MUST execute canonical semantics instead of redefining them.
 
 ## 0.2 Normative language
 
-The keywords **MUST**, **MUST NOT**, **SHOULD**, **SHOULD NOT**, and **MAY** are normative requirement levels.
+The keywords **MUST**, **MUST NOT**, **SHOULD**, **SHOULD NOT**, and **MAY** indicate normative requirement levels and are interpreted in the RFC 2119 / RFC 8174 sense.
 
 ## 0.3 Normative artifacts
 
-The following schemas are normative references:
-- `./schema/administrative-procedure.schema.json` (root model)
-- `./schema/workflow.schema.json` (workflow model)
-- `./schema/fee.schema.json` (fee model)
-- `./schema/document-requirement.schema.json` (document requirement model)
+The normative artifacts of this specification are the schemas `./schema/administrative-procedure.schema.json` (root model), `./schema/workflow.schema.json` (workflow model), `./schema/fee.schema.json` (fee model), and `./schema/document-requirement.schema.json` (document requirement model).
 
 ## 0.4 Governance reference
 
-Schema evolution is managed by a small working group (see `2-conformance-and-governance.md`).
+Schema evolution is managed by a working group under the governance rules defined in `2-conformance-and-governance.md`.

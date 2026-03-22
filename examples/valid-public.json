@@ -1,0 +1,63 @@
+{
+  "schemaVersion": "2.0.0",
+  "generatedAt": "2026-03-22T17:00:00Z",
+  "serviceId": "MID-EXAMPLE-002",
+  "name": "Demande d'autorisation administrative",
+  "status": "active",
+  "owner": {
+    "ministry": "MID",
+    "entity": "Direction des Services"
+  },
+  "workflow": {
+    "schemaVersion": "2.0.0",
+    "version": "v2",
+    "generatedAt": "2026-03-22T17:00:00Z",
+    "steps": [
+      {
+        "stepId": "step_1",
+        "order": 1,
+        "label": "Soumission du dossier",
+        "stepType": "submission",
+        "confidence": "auto_high"
+      },
+      {
+        "stepId": "step_2",
+        "order": 2,
+        "label": "Vérification administrative",
+        "stepType": "verification",
+        "confidence": "auto_high"
+      },
+      {
+        "stepId": "step_3",
+        "order": 3,
+        "label": "Notification de décision",
+        "stepType": "notification",
+        "confidence": "auto_high"
+      }
+    ],
+    "sourceRaw": "Source validée",
+    "normalizationConfidence": "auto_high",
+    "reviewStatus": "approved_auto"
+  },
+  "fee": {
+    "schemaVersion": "2.0.0",
+    "generatedAt": "2026-03-22T17:00:00Z",
+    "currency": "MGA",
+    "model": "fixed",
+    "rules": [
+      {
+        "ruleId": "rule_fixed_1",
+        "type": "fixed",
+        "amount": 5000,
+        "confidence": "high"
+      }
+    ],
+    "summary": {
+      "isConditional": false,
+      "minAmount": 5000,
+      "maxAmount": 5000,
+      "defaultAmount": 5000,
+      "ruleCount": 1
+    }
+  }
+}

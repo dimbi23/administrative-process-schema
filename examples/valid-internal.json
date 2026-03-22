@@ -1,0 +1,49 @@
+{
+  "schemaVersion": "2.0.0",
+  "generatedAt": "2026-03-22T17:00:00Z",
+  "serviceId": "MID-EXAMPLE-001",
+  "name": "Demande d'attestation administrative",
+  "status": "active",
+  "owner": {
+    "ministry": "MID",
+    "entity": "Direction Exemple"
+  },
+  "workflow": {
+    "schemaVersion": "2.0.0",
+    "version": "v2",
+    "generatedAt": "2026-03-22T17:00:00Z",
+    "steps": [
+      {
+        "stepId": "step_1",
+        "order": 1,
+        "label": "Étape sans libellé (1)",
+        "stepType": "submission",
+        "confidence": "manual_required",
+        "qualityFlags": ["missing_label_autofilled"]
+      }
+    ],
+    "sourceRaw": "Source XLS",
+    "normalizationConfidence": "manual_required",
+    "reviewStatus": "manual_required"
+  },
+  "fee": {
+    "schemaVersion": "2.0.0",
+    "generatedAt": "2026-03-22T17:00:00Z",
+    "currency": "MGA",
+    "model": "unknown",
+    "rules": [
+      {
+        "ruleId": "rule_unknown_1",
+        "type": "unknown",
+        "confidence": "low"
+      }
+    ],
+    "summary": {
+      "isConditional": false,
+      "minAmount": null,
+      "maxAmount": null,
+      "defaultAmount": null,
+      "ruleCount": 1
+    }
+  }
+}
