@@ -1,0 +1,255 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dimbinirina.dev/schemas/procedures/fee.schema.json",
+  "title": "Service Fee v2",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "currency",
+    "model",
+    "rules",
+    "summary",
+    "generatedAt"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "currency": {
+      "type": "string",
+      "enum": [
+        "MGA"
+      ]
+    },
+    "model": {
+      "type": "string",
+      "enum": [
+        "fixed",
+        "conditional",
+        "range",
+        "composite",
+        "percentage",
+        "unknown"
+      ]
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "ruleId",
+          "type"
+        ],
+        "properties": {
+          "ruleId": {
+            "type": "string",
+            "pattern": "^rule_[a-zA-Z0-9_-]+$"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "fixed",
+              "range",
+              "percentage",
+              "component",
+              "unknown"
+            ]
+          },
+          "amount": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "minAmount": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "maxAmount": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "percentage": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 100
+          },
+          "condition": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "appliesTo": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "componentLabel": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "confidence": {
+            "type": "string",
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ]
+          },
+          "sourceText": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "type": {
+                  "const": "fixed"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "amount"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "type": {
+                  "const": "range"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "minAmount",
+                "maxAmount"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "type": {
+                  "const": "percentage"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "percentage"
+              ]
+            }
+          }
+        ],
+        "additionalProperties": false
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": [
+        "isConditional",
+        "minAmount",
+        "maxAmount",
+        "defaultAmount",
+        "ruleCount"
+      ],
+      "properties": {
+        "isConditional": {
+          "type": "boolean"
+        },
+        "minAmount": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "maxAmount": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "defaultAmount": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "ruleCount": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "rawText": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rawValues": {
+          "type": "array",
+          "items": {
+            "type": [
+              "number",
+              "string"
+            ]
+          }
+        },
+        "sourceFile": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "sourceRowId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "parserVersion": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

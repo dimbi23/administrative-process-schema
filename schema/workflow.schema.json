@@ -1,0 +1,309 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dimbinirina.dev/schemas/procedures/workflow.schema.json",
+  "title": "Service Workflow v2",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "version",
+    "generatedAt",
+    "steps",
+    "sourceRaw",
+    "normalizationConfidence",
+    "reviewStatus"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^v?\\d+(\\.\\d+){0,2}$"
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "generator": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "stepId",
+          "order",
+          "label",
+          "stepType",
+          "confidence"
+        ],
+        "properties": {
+          "stepId": {
+            "type": "string",
+            "pattern": "^step_[a-z0-9_-]+$"
+          },
+          "order": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "actor": {
+            "type": "string",
+            "enum": [
+              "citizen",
+              "business",
+              "administration",
+              "mixed",
+              "unknown"
+            ]
+          },
+          "channel": {
+            "type": "string",
+            "enum": [
+              "offline",
+              "online",
+              "hybrid",
+              "unknown"
+            ]
+          },
+          "stepType": {
+            "type": "string",
+            "enum": [
+              "submission",
+              "verification",
+              "inspection",
+              "payment",
+              "instruction",
+              "approval",
+              "decision",
+              "notification",
+              "delivery",
+              "archival",
+              "other"
+            ]
+          },
+          "requiresPayment": {
+            "type": "boolean"
+          },
+          "documentsIn": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "documentsOut": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "slaDays": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "confidence": {
+            "type": "string",
+            "enum": [
+              "auto_high",
+              "auto_medium",
+              "manual_required"
+            ]
+          },
+          "sourceText": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "processingLocation": {
+            "type": "object",
+            "properties": {
+              "ministry": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "entity": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "directorate": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "serviceUnit": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "office": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "channelPoint": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "notes": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "additionalProperties": false
+          },
+          "responsibleUnit": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "handoffTo": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "qualityFlags": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "enum": [
+                "missing_sla",
+                "manual_step",
+                "unknown_actor",
+                "unknown_channel",
+                "unknown_step_type",
+                "missing_documents",
+                "processing_location_missing",
+                "missing_label_autofilled"
+              ]
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "sourceRaw": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "normalizationConfidence": {
+      "type": "string",
+      "enum": [
+        "auto_high",
+        "auto_medium",
+        "manual_required"
+      ]
+    },
+    "reviewStatus": {
+      "type": "string",
+      "enum": [
+        "approved_auto",
+        "review_required",
+        "manual_required"
+      ]
+    },
+    "defaultProcessingLocation": {
+      "type": "object",
+      "properties": {
+        "ministry": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "entity": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "directorate": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "serviceUnit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "office": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "notes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "sourceFile": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "sourceRowId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "parserVersion": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

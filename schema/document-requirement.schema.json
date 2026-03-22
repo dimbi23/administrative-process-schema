@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dimbinirina.dev/schemas/procedures/document-requirement.schema.json",
+  "title": "Document Requirement v2",
+  "type": "object",
+  "required": ["documentTypeCode", "label", "requirementLevel"],
+  "properties": {
+    "documentTypeCode": { "type": "string", "minLength": 1 },
+    "label": { "type": "string", "minLength": 1 },
+    "requirementLevel": {
+      "type": "string",
+      "enum": ["required", "conditional", "optional"]
+    },
+    "condition": { "type": ["string", "null"] },
+    "sourceText": { "type": ["string", "null"] },
+    "confidence": {
+      "type": "string",
+      "enum": ["auto_high", "auto_medium", "manual_required"]
+    }
+  },
+  "additionalProperties": false
+}
