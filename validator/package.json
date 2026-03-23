@@ -1,0 +1,14 @@
+{
+  "name": "administrative-procedure-validator",
+  "version": "1.0.0",
+  "description": "Schema and business rules validator for the Administrative Process Schema Standard",
+  "main": "validate.js",
+  "scripts": {
+    "validate": "node validate.js",
+    "validate:all": "node validate-all.js"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1"
+  }
+}
