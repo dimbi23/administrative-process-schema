@@ -1,6 +1,6 @@
 {
   "name": "@dimbi23/administrative-process-schema",
-  "version": "2.0.0-rc.1",
+  "version": "2.0.0-rc1",
   "description": "Machine-readable standard for administrative procedures — JSON schemas, document taxonomy, and validator (BR-001–BR-013)",
   "license": "MIT",
   "repository": {
