@@ -20,6 +20,10 @@ Rule-level conditional constraints are enforced by schema logic: `fixed` rules r
 
 Each `documentsRequired[]` entry MUST include `documentTypeCode`, `label`, and `requirementLevel`. It MAY include `condition` when a requirement is context-dependent, `sourceText` for traceability, and `confidence` to indicate normalization quality.
 
+The `documentTypeCode` field MUST use a canonical code from the document taxonomy (`document_taxonomy.csv`, column `documentCode`, where `active=true`). This taxonomy is the authoritative controlled vocabulary for document type codes across the entire pipeline — catalog records, form-definition satellites, and normalization tooling all reference the same codes. Non-conformant codes (e.g., ad-hoc strings like `CIN_COPY`) are invalid and MUST be rejected (BR-013).
+
+The taxonomy follows the naming convention `DOC_[CATEGORY]_[SUBCATEGORY]` (e.g., `DOC_ID_CIN`, `DOC_RES_CERT`, `DOC_PAY_BANK_SLIP`). The full taxonomy is maintained at `../document_taxonomy.csv` relative to the spec root.
+
 ## 3.5 Business consistency rules (core)
 
 This section provides a prose summary. The authoritative machine-testable form of these rules is the business rules catalog in `6-business-rules-catalog.md`. In case of conflict, the catalog is normative.

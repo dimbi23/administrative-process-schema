@@ -231,7 +231,7 @@ Each item in `fee.rules`.
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `documentTypeCode` | string | MUST | Stable document type identifier. Cross-reference key to `form-definition` satellite. Convention: uppercase with underscores (e.g. `"CIN_COPY"`, `"BIRTH_CERTIFICATE"`). |
+| `documentTypeCode` | string | MUST | Canonical document type code from the document taxonomy (`document_taxonomy.csv`, `active=true`). Convention: `DOC_[CATEGORY]_[SUBCATEGORY]` (e.g. `"DOC_ID_CIN"`, `"DOC_RES_CERT"`). Cross-reference key to `form-definition` satellite (`field.mapsToDocumentTypeCode`). Enforced by BR-013. |
 | `label` | string | MUST | Display name shown to the applicant (e.g. `"Copie de la carte d'identité nationale"`). |
 | `requirementLevel` | string (enum) | MUST | `required`: always mandatory. `conditional`: mandatory only when `condition` is met. `optional`: not blocking. |
 | `condition` | string \| null | MAY | When this document is required. Populated for `conditional` entries (e.g. `"Pour les demandeurs de nationalité étrangère"`). |
@@ -416,3 +416,5 @@ Each item in `executionMapping.steps`. One entry per workflow step.
 | BR-009 | Catalog / Public API | No unresolved blocking `qualityFlags` |
 | BR-010 | Catalog / Public API | `fee.model != "unknown"` when `requiresPayment=true` |
 | BR-011 | Satellites / Both | `serviceId` in satellite matches a catalog record |
+| BR-012 | Catalog / Both | `step.transitions[].targetStepId` is `"END"` or a known `stepId` |
+| BR-013 | Catalog / Both | every `documentTypeCode` in `documentsRequired` is an active code in the taxonomy |

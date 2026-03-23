@@ -63,6 +63,24 @@ function buildValidator() {
   return ajv
 }
 
+// ─── Taxonomy loader ──────────────────────────────────────────────────────────
+
+/**
+ * Parse document_taxonomy.csv and return a Set of active documentCode values.
+ * Assumes documentCode is always the first column (no commas in that field).
+ */
+function loadTaxonomy(filePath) {
+  const lines = fs.readFileSync(filePath, 'utf8').trim().split('\n')
+  const codes = new Set()
+  for (let i = 1; i < lines.length; i++) {
+    const fields = lines[i].split(',')
+    const code   = fields[0].trim()
+    const active = (fields[11] || '').trim()
+    if (code && active === 'true') codes.add(code)
+  }
+  return codes
+}
+
 // ─── Business rules ───────────────────────────────────────────────────────────
 
 const PLACEHOLDER_RE = /^étape sans libellé/i
@@ -72,7 +90,7 @@ const BLOCKING_FLAGS = new Set(['missing_label_autofilled'])
  * Each violation: { rule, message, level }
  * level defaults to 'BLOCK'; use 'WARNING' for non-blocking.
  */
-function checkCatalogRules(record, profile) {
+function checkCatalogRules(record, profile, taxonomy) {
   const v = []
   const { workflow, fee } = record
 
@@ -179,6 +197,24 @@ function checkCatalogRules(record, profile) {
     }
   }
 
+  // BR-013 — documentTypeCode taxonomy conformance
+  if (taxonomy === null) {
+    v.push({
+      rule: 'BR-013',
+      level: 'WARNING',
+      message: 'No --taxonomy file provided. Cannot verify documentTypeCode taxonomy conformance.',
+    })
+  } else {
+    for (const doc of record.documentsRequired || []) {
+      if (!taxonomy.has(doc.documentTypeCode)) {
+        v.push({
+          rule: 'BR-013',
+          message: `documentsRequired entry "${doc.documentTypeCode}" is not a known active code in the document taxonomy.`,
+        })
+      }
+    }
+  }
+
   // BR-010 — unknown fee model with payment step
   if (profile === 'public' && fee.model === 'unknown') {
     const paymentSteps = (workflow.steps || []).filter(
@@ -245,24 +281,26 @@ function parseArgs(argv) {
     printHelp()
     process.exit(0)
   }
-  const filePath    = args[0]
-  const profileIdx  = args.indexOf('--profile')
-  const profile     = profileIdx !== -1 ? args[profileIdx + 1] : 'public'
-  const catalogIdx  = args.indexOf('--catalog')
-  const catalogPath = catalogIdx !== -1 ? args[catalogIdx + 1] : null
+  const filePath      = args[0]
+  const profileIdx    = args.indexOf('--profile')
+  const profile       = profileIdx !== -1 ? args[profileIdx + 1] : 'public'
+  const catalogIdx    = args.indexOf('--catalog')
+  const catalogPath   = catalogIdx !== -1 ? args[catalogIdx + 1] : null
+  const taxonomyIdx   = args.indexOf('--taxonomy')
+  const taxonomyPath  = taxonomyIdx !== -1 ? args[taxonomyIdx + 1] : null
 
   if (!['internal', 'public'].includes(profile)) {
     console.error(`${C.red}Error:${C.reset} Unknown profile "${profile}". Use "internal" or "public".`)
     process.exit(2)
   }
-  return { filePath, profile, catalogPath }
+  return { filePath, profile, catalogPath, taxonomyPath }
 }
 
 function printHelp() {
   console.log(`
 ${C.bold}Administrative Procedure Validator${C.reset}
 
-  Validates a JSON record against its schema and checks business rules BR-001–BR-011.
+  Validates a JSON record against its schema and checks business rules BR-001–BR-013.
 
 ${C.bold}Usage:${C.reset}
   node validate.js <file> [options]
@@ -270,6 +308,7 @@ ${C.bold}Usage:${C.reset}
 ${C.bold}Options:${C.reset}
   --profile <internal|public>   Conformance profile to validate against (default: public)
   --catalog <file>              Catalog JSON for satellite BR-011 referential integrity check
+  --taxonomy <file>             document_taxonomy.csv for BR-013 documentTypeCode conformance check
   --help, -h                    Show this help
 
 ${C.bold}Exit codes:${C.reset}
@@ -278,13 +317,13 @@ ${C.bold}Exit codes:${C.reset}
   2   Execution error (file not found, parse error, unknown schema type)
 
 ${C.bold}Examples:${C.reset}
-  node validate.js ../examples/valid-public.json
+  node validate.js ../examples/valid-public.json --taxonomy ../../document_taxonomy.csv
   node validate.js ../examples/valid-internal.json --profile internal
   node validate.js ../examples/valid-form-definition.json --catalog ../examples/valid-public.json
 `)
 }
 
-function run({ filePath, profile, catalogPath }) {
+function run({ filePath, profile, catalogPath, taxonomyPath }) {
   // Load record
   let record
   try {
@@ -305,6 +344,17 @@ function run({ filePath, profile, catalogPath }) {
     }
   }
 
+  // Load taxonomy if provided
+  let taxonomy = null
+  if (taxonomyPath) {
+    try {
+      taxonomy = loadTaxonomy(taxonomyPath)
+    } catch (e) {
+      console.error(`${C.red}Error:${C.reset} Cannot read taxonomy "${taxonomyPath}": ${e.message}`)
+      process.exit(2)
+    }
+  }
+
   // Detect schema type
   const schemaType = detectSchemaType(record)
   if (!schemaType) {
@@ -318,6 +368,7 @@ function run({ filePath, profile, catalogPath }) {
   console.log(`${C.bold}Type    :${C.reset} ${schemaType}`)
   console.log(`${C.bold}Profile :${C.reset} ${profile}`)
   if (catalog) console.log(`${C.bold}Catalog :${C.reset} ${path.basename(catalogPath)}`)
+  if (taxonomy) console.log(`${C.bold}Taxonomy:${C.reset} ${path.basename(taxonomyPath)} (${taxonomy.size} active codes)`)
   console.log()
 
   // 1. Structural schema validation
@@ -339,7 +390,7 @@ function run({ filePath, profile, catalogPath }) {
 
   // 2. Business rules
   const violations = schemaType === 'catalog'
-    ? checkCatalogRules(record, profile)
+    ? checkCatalogRules(record, profile, taxonomy)
     : checkSatelliteRules(record, catalog)
 
   const blocks   = violations.filter(v => v.level !== 'WARNING')
@@ -370,6 +421,6 @@ function run({ filePath, profile, catalogPath }) {
   return isValid
 }
 
-const { filePath, profile, catalogPath } = parseArgs(process.argv)
-const valid = run({ filePath, profile, catalogPath })
+const { filePath, profile, catalogPath, taxonomyPath } = parseArgs(process.argv)
+const valid = run({ filePath, profile, catalogPath, taxonomyPath })
 process.exit(valid ? 0 : 1)

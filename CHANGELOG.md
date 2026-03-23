@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog and the project follows Semantic Versioning.
 
+## [2.0.0-draft.6] - 2026-03-23
+
+### Added
+- **`6-business-rules-catalog.md`**: BR-013 — `documentTypeCode` taxonomy conformance (every code in `documentsRequired` MUST exist in `document_taxonomy.csv` with `active=true`)
+- **`validator/validate.js`**: BR-013 implementation — `--taxonomy <file>` flag loads `document_taxonomy.csv`; checks all `documentsRequired[].documentTypeCode` values; emits WARNING if `--taxonomy` not provided, BLOCK if code unknown
+- **`validator/validate.js`**: `loadTaxonomy()` CSV parser (column 0 = documentCode, column 11 = active)
+
+### Changed
+- **`3-information-model-and-field-dictionary.md` §3.4**: normative reference to `document_taxonomy.csv` as the authoritative controlled vocabulary for `documentTypeCode`; naming convention `DOC_[CATEGORY]_[SUBCATEGORY]` documented
+- **`schema-reference.md`**: `documentTypeCode` description updated with canonical convention and BR-013 reference; BR-012 and BR-013 added to quick reference table
+
 ## [2.0.0-draft.5] - 2026-03-23
 
 ### Added

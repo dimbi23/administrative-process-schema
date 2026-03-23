@@ -80,6 +80,13 @@ Each rule has:
 - **Expression:** for every `step.transitions[].targetStepId`, value MUST be either `"END"` or a `stepId` present in the same workflow
 - **Failure action:** INVALID record
 
+## BR-013 — documentTypeCode taxonomy conformance
+- **Level:** MUST
+- **Profile:** Both
+- **Expression:** every `documentTypeCode` in `documentsRequired[]` MUST be present in the canonical document taxonomy with `active=true`
+- **Failure action:** INVALID record
+- **Note:** The canonical taxonomy is `document_taxonomy.csv` (column `documentCode`). Ad-hoc codes (e.g. `CIN_COPY`, `DOMICILE_PROOF`) are non-conformant. Use the canonical code (e.g. `DOC_ID_CIN`, `DOC_RES_CERT`). The validator enforces this rule when invoked with the `--taxonomy` flag; without it, a WARNING is emitted.
+
 ## BR-011 — Satellite referential integrity
 - **Level:** MUST
 - **Profile:** Both (applies to satellite schemas)
