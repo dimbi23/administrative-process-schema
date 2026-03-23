@@ -166,6 +166,19 @@ function checkCatalogRules(record, profile) {
     }
   }
 
+  // BR-012 — transition targetStepId references a known stepId or END
+  const stepIds = new Set((workflow.steps || []).map(s => s.stepId))
+  for (const step of workflow.steps || []) {
+    for (const t of step.transitions || []) {
+      if (t.targetStepId !== 'END' && !stepIds.has(t.targetStepId)) {
+        v.push({
+          rule: 'BR-012',
+          message: `Step "${step.stepId}" has a transition "${t.transitionId}" pointing to unknown targetStepId "${t.targetStepId}".`,
+        })
+      }
+    }
+  }
+
   // BR-010 — unknown fee model with payment step
   if (profile === 'public' && fee.model === 'unknown') {
     const paymentSteps = (workflow.steps || []).filter(

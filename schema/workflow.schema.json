@@ -162,6 +162,35 @@
                 "missing_label_autofilled"
               ]
             }
+          },
+          "transitions": {
+            "type": "array",
+            "description": "Outgoing conditional transitions from this step. Models branching logic (GovStack Exclusive Gateway equivalent). If absent or empty, execution proceeds to the next step by order value (default sequential flow). If defined, the first matching condition determines the next step; a transition with no condition acts as the default/fallback path.",
+            "items": {
+              "type": "object",
+              "required": ["transitionId", "targetStepId"],
+              "properties": {
+                "transitionId": {
+                  "type": "string",
+                  "pattern": "^trans_[a-z0-9_-]+$",
+                  "description": "Stable unique identifier for this transition. Pattern: trans_ followed by lowercase alphanumerics, hyphens, or underscores (e.g. 'trans_approved', 'trans_rejected')."
+                },
+                "label": {
+                  "type": ["string", "null"],
+                  "description": "Human-readable label for this transition path (e.g. 'Approuvé', 'Rejeté', 'Complément requis')."
+                },
+                "condition": {
+                  "type": ["string", "null"],
+                  "description": "Expression evaluated against the step output to determine if this transition fires (e.g. 'output.decision == approved'). Null or absent means this is the default fallback transition."
+                },
+                "targetStepId": {
+                  "type": "string",
+                  "pattern": "^(step_[a-z0-9_-]+|END)$",
+                  "description": "stepId of the next step to execute if this transition fires. Use the special value 'END' to terminate the workflow instance from this point."
+                }
+              },
+              "additionalProperties": false
+            }
           }
         },
         "additionalProperties": false

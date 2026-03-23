@@ -33,6 +33,31 @@
       "type": "string",
       "format": "date-time"
     },
+    "trigger": {
+      "type": "object",
+      "description": "Defines how this workflow process is initiated. Aligns with GovStack WBB required execution methods: API-based, manual, and time-based. If absent, defaults to api trigger.",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["api", "cron", "event"],
+          "description": "Initiation method. 'api': triggered by a POST to /processes/{processId}/start (e.g. case submission from portal). 'cron': triggered on a time schedule (e.g. batch processing, reminder notifications). 'event': triggered by a prior process outcome (flow-trigger based on success or failure of another process)."
+        },
+        "cronExpression": {
+          "type": ["string", "null"],
+          "description": "Cron expression defining the schedule. Required when type is 'cron' (e.g. '0 8 * * 1-5' for weekdays at 08:00). Standard 5-field cron syntax."
+        },
+        "eventType": {
+          "type": ["string", "null"],
+          "description": "Event type that triggers this process. Required when type is 'event' (e.g. 'case.decided', 'process.completed'). Aligns with GovStack flow-trigger concept."
+        },
+        "eventSourceProcessId": {
+          "type": ["string", "null"],
+          "description": "serviceId of the source process whose outcome triggers this one. Used when type is 'event' and the trigger originates from another procedure's completion."
+        }
+      },
+      "additionalProperties": false
+    },
     "steps": {
       "type": "array",
       "minItems": 1,

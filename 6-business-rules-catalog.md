@@ -74,6 +74,12 @@ Each rule has:
 - **Expression:** if any `stepType == "payment"`, `fee.model != "unknown"`
 - **Failure action:** WARNING (default); escalate to BLOCK if payment step has `requiresPayment: true`
 
+## BR-012 — Transition target integrity
+- **Level:** MUST
+- **Profile:** Both
+- **Expression:** for every `step.transitions[].targetStepId`, value MUST be either `"END"` or a `stepId` present in the same workflow
+- **Failure action:** INVALID record
+
 ## BR-011 — Satellite referential integrity
 - **Level:** MUST
 - **Profile:** Both (applies to satellite schemas)
