@@ -421,6 +421,20 @@ function run({ filePath, profile, catalogPath, taxonomyPath }) {
   return isValid
 }
 
-const { filePath, profile, catalogPath, taxonomyPath } = parseArgs(process.argv)
-const valid = run({ filePath, profile, catalogPath, taxonomyPath })
-process.exit(valid ? 0 : 1)
+// ─── Programmatic API ─────────────────────────────────────────────────────────
+
+if (require.main === module) {
+  const { filePath, profile, catalogPath, taxonomyPath } = parseArgs(process.argv)
+  const valid = run({ filePath, profile, catalogPath, taxonomyPath })
+  process.exit(valid ? 0 : 1)
+} else {
+  module.exports = {
+    checkCatalogRules,
+    checkSatelliteRules,
+    buildValidator,
+    loadTaxonomy,
+    detectSchemaType,
+    SCHEMA_IDS,
+    run,
+  }
+}

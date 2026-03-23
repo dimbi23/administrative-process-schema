@@ -1,6 +1,8 @@
 # 0. Document Control
 
 - **Specification:** Administrative Process Schema Standard
+- **Package:** `@dimbi23/administrative-process-schema`
+- **Registry:** GitHub Packages (`https://npm.pkg.github.com`)
 - **Status:** Release Candidate
 - **Current version:** 2.0.0-rc1
 - **Maintainer:** Administrative Process Schema Working Group

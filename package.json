@@ -1,0 +1,36 @@
+{
+  "name": "@dimbi23/administrative-process-schema",
+  "version": "2.0.0-rc.1",
+  "description": "Machine-readable standard for administrative procedures — JSON schemas, document taxonomy, and validator (BR-001–BR-013)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dimbi23/administrative-process-schema.git"
+  },
+  "homepage": "https://github.com/dimbi23/administrative-process-schema#readme",
+  "engines": {
+    "node": ">=18"
+  },
+  "files": [
+    "schema/",
+    "taxonomy/",
+    "validator/validate.js",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "exports": {
+    "./schema/*": "./schema/*",
+    "./taxonomy/*": "./taxonomy/*",
+    "./validator": "./validator/validate.js"
+  },
+  "bin": {
+    "apss-validate": "./validator/validate.js"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  }
+}
