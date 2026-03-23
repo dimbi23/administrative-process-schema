@@ -2,6 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://dimbinirina.dev/schemas/procedures/workflow.schema.json",
   "title": "Service Workflow v2",
+  "description": "Defines the ordered sequence of steps that constitute an administrative procedure's execution lifecycle. Embedded in the root AdministrativeProcedure record. The execution-mapping satellite schema maps each stepId to concrete n8n actions.",
   "type": "object",
   "required": [
     "schemaVersion",
@@ -15,25 +16,27 @@
   "properties": {
     "schemaVersion": {
       "type": "string",
-      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Semantic version of the workflow schema used to produce this object (e.g. '2.0.0')."
     },
     "version": {
       "type": "string",
-      "pattern": "^v?\\d+(\\.\\d+){0,2}$"
+      "pattern": "^v?\\d+(\\.\\d+){0,2}$",
+      "description": "Version of this workflow definition within the procedure's lifecycle (e.g. 'v2', 'v1.3'). Incremented when steps are added, removed, or reordered."
     },
     "generatedAt": {
       "type": "string",
-      "format": "date-time"
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of when this workflow was generated or last normalized."
     },
     "generator": {
-      "type": [
-        "string",
-        "null"
-      ]
+      "type": ["string", "null"],
+      "description": "Identifier of the tool or pipeline that produced this workflow object (e.g. 'xls-normalizer-v1.2'). Used for debugging normalization issues."
     },
     "steps": {
       "type": "array",
       "minItems": 1,
+      "description": "Ordered list of workflow steps. Must contain at least one step. Steps MUST have unique, strictly increasing order values (BR-002, BR-003).",
       "items": {
         "type": "object",
         "required": [
@@ -46,40 +49,32 @@
         "properties": {
           "stepId": {
             "type": "string",
-            "pattern": "^step_[a-z0-9_-]+$"
+            "pattern": "^step_[a-z0-9_-]+$",
+            "description": "Stable unique identifier for this step within the workflow. Used as the linking key by the execution-mapping satellite. Pattern: step_ followed by lowercase alphanumerics, hyphens, or underscores (e.g. 'step_verification_docs')."
           },
           "order": {
             "type": "integer",
-            "minimum": 1
+            "minimum": 1,
+            "description": "Execution sequence position, starting at 1. All order values within a workflow MUST be unique and strictly increasing (BR-002, BR-003)."
           },
           "label": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "description": "Human-readable name of this step. MUST NOT be a placeholder (e.g. 'Étape sans libellé') in the Public API Profile (BR-004). Should describe the action clearly (e.g. 'Vérification administrative du dossier')."
           },
           "description": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"],
+            "description": "Optional detailed description of what happens during this step. Provides additional context for portal display and human reviewers."
           },
           "actor": {
             "type": "string",
-            "enum": [
-              "citizen",
-              "business",
-              "administration",
-              "mixed",
-              "unknown"
-            ]
+            "enum": ["citizen", "business", "administration", "mixed", "unknown"],
+            "description": "Who performs this step. 'citizen': the applicant acts. 'business': a legal entity acts. 'administration': the institution acts. 'mixed': both sides act. 'unknown': could not be determined — sets the 'unknown_actor' quality flag."
           },
           "channel": {
             "type": "string",
-            "enum": [
-              "offline",
-              "online",
-              "hybrid",
-              "unknown"
-            ]
+            "enum": ["offline", "online", "hybrid", "unknown"],
+            "description": "How this step is performed. 'offline': physical presence or paper. 'online': fully digital. 'hybrid': supports both. 'unknown': could not be determined — sets the 'unknown_channel' quality flag."
           },
           "stepType": {
             "type": "string",
@@ -95,109 +90,65 @@
               "delivery",
               "archival",
               "other"
-            ]
+            ],
+            "description": "Semantic classification of the step. Drives execution action mapping in the execution-mapping satellite. 'submission': case intake. 'verification': document or eligibility check. 'inspection': physical on-site visit. 'payment': fee collection. 'instruction': delivering guidance or a pre-filled form to the citizen. 'approval': internal authority sign-off. 'decision': final determination (grant/reject/defer). 'notification': outbound communication to the citizen. 'delivery': handing over the output document. 'archival': closing and storing the case. 'other': use 'unknown_step_type' quality flag if genuinely unclassifiable."
           },
           "requiresPayment": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "Explicit flag indicating that this step involves a payment transaction. Used to enforce BR-010 (fee model must not be 'unknown' when true)."
           },
           "documentsIn": {
             "type": "array",
             "uniqueItems": true,
-            "items": {
-              "type": "string"
-            }
+            "items": { "type": "string" },
+            "description": "List of documentTypeCode values that are consumed (verified, checked) at this step. References codes defined in documentsRequired."
           },
           "documentsOut": {
             "type": "array",
             "uniqueItems": true,
-            "items": {
-              "type": "string"
-            }
+            "items": { "type": "string" },
+            "description": "List of documentTypeCode values that are produced (issued, stamped) at this step."
           },
           "slaDays": {
-            "type": [
-              "number",
-              "null"
-            ],
-            "minimum": 0
+            "type": ["number", "null"],
+            "minimum": 0,
+            "description": "Maximum number of working days allocated for this step. Null if not defined. Used for SLA monitoring and escalation in the execution engine."
           },
           "confidence": {
             "type": "string",
-            "enum": [
-              "auto_high",
-              "auto_medium",
-              "manual_required"
-            ]
+            "enum": ["auto_high", "auto_medium", "manual_required"],
+            "description": "Normalization confidence for this step's data. 'auto_high': extracted with high confidence, no review needed. 'auto_medium': extracted with moderate confidence, review recommended. 'manual_required': could not be reliably extracted — human review is required before publication."
           },
           "sourceText": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"],
+            "description": "Original text fragment from the source document that this step was extracted from. Preserved for traceability and manual review."
           },
           "processingLocation": {
             "type": "object",
+            "description": "Where this step is physically or organizationally processed. Provides more granular location than the procedure-level owner.",
             "properties": {
-              "ministry": {
-                "type": [
-                  "string",
-                  "null"
-                ]
-              },
-              "entity": {
-                "type": [
-                  "string",
-                  "null"
-                ]
-              },
-              "directorate": {
-                "type": [
-                  "string",
-                  "null"
-                ]
-              },
-              "serviceUnit": {
-                "type": [
-                  "string",
-                  "null"
-                ]
-              },
-              "office": {
-                "type": [
-                  "string",
-                  "null"
-                ]
-              },
-              "channelPoint": {
-                "type": [
-                  "string",
-                  "null"
-                ]
-              },
-              "notes": {
-                "type": [
-                  "string",
-                  "null"
-                ]
-              }
+              "ministry": { "type": ["string", "null"], "description": "Ministry where this step is processed, if different from the procedure owner." },
+              "entity": { "type": ["string", "null"], "description": "Entity or agency responsible for this step." },
+              "directorate": { "type": ["string", "null"], "description": "Directorate handling this step." },
+              "serviceUnit": { "type": ["string", "null"], "description": "Service unit responsible for this step." },
+              "office": { "type": ["string", "null"], "description": "Specific office or counter (e.g. 'Guichet 3 — Accueil dossiers')." },
+              "channelPoint": { "type": ["string", "null"], "description": "Named access point for this step (e.g. 'portail.gov.mg/soumettre', 'Commune de résidence')." },
+              "notes": { "type": ["string", "null"], "description": "Free-text notes about the processing location (e.g. opening hours, special instructions)." }
             },
             "additionalProperties": false
           },
           "responsibleUnit": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"],
+            "description": "Short label identifying the unit responsible for executing this step. Simplified alternative to processingLocation when full breakdown is not available."
           },
           "handoffTo": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"],
+            "description": "Identifier of the unit or actor that receives the case after this step completes. Documents inter-unit handoffs for process mapping."
           },
           "qualityFlags": {
             "type": "array",
             "uniqueItems": true,
+            "description": "List of quality issues detected on this step during normalization. Blocking flags prevent Public API publication (BR-009). See flag definitions below.",
             "items": {
               "type": "string",
               "enum": [
@@ -217,89 +168,47 @@
       }
     },
     "sourceRaw": {
-      "type": [
-        "string",
-        "null"
-      ]
+      "type": ["string", "null"],
+      "description": "Full raw text of the workflow source as extracted from the original document (XLS row, PDF section, etc.). Preserved verbatim for traceability and re-normalization."
     },
     "normalizationConfidence": {
       "type": "string",
-      "enum": [
-        "auto_high",
-        "auto_medium",
-        "manual_required"
-      ]
+      "enum": ["auto_high", "auto_medium", "manual_required"],
+      "description": "Overall confidence level for the entire workflow normalization. Reflects the worst-case confidence across all steps. 'manual_required' blocks Public API publication (BR-008 via reviewStatus)."
     },
     "reviewStatus": {
       "type": "string",
-      "enum": [
-        "approved_auto",
-        "review_required",
-        "manual_required"
-      ]
+      "enum": ["approved_auto", "review_required", "manual_required"],
+      "description": "Review and publication readiness status. 'approved_auto': normalization confidence was high enough for automatic approval — publishable in Public API Profile. 'review_required': a human reviewer must inspect before publication — valid in Internal Profile only. 'manual_required': critical issues prevent automated processing — valid in Internal Profile only. Only 'approved_auto' satisfies BR-008 for Public API publication."
     },
     "defaultProcessingLocation": {
       "type": "object",
+      "description": "Default processing location applied to steps that do not specify their own processingLocation. Steps with their own processingLocation override this default.",
       "properties": {
-        "ministry": {
-          "type": [
-            "string",
-            "null"
-          ]
-        },
-        "entity": {
-          "type": [
-            "string",
-            "null"
-          ]
-        },
-        "directorate": {
-          "type": [
-            "string",
-            "null"
-          ]
-        },
-        "serviceUnit": {
-          "type": [
-            "string",
-            "null"
-          ]
-        },
-        "office": {
-          "type": [
-            "string",
-            "null"
-          ]
-        },
-        "notes": {
-          "type": [
-            "string",
-            "null"
-          ]
-        }
+        "ministry": { "type": ["string", "null"], "description": "Default ministry for step processing." },
+        "entity": { "type": ["string", "null"], "description": "Default entity for step processing." },
+        "directorate": { "type": ["string", "null"], "description": "Default directorate for step processing." },
+        "serviceUnit": { "type": ["string", "null"], "description": "Default service unit for step processing." },
+        "office": { "type": ["string", "null"], "description": "Default office for step processing." },
+        "notes": { "type": ["string", "null"], "description": "Notes about the default processing location." }
       },
       "additionalProperties": false
     },
     "source": {
       "type": "object",
+      "description": "Provenance metadata identifying the source file and parser that produced this workflow object.",
       "properties": {
         "sourceFile": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": ["string", "null"],
+          "description": "Filename or path of the source document (e.g. 'procedures_MID_2025.xlsx')."
         },
         "sourceRowId": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": ["string", "null"],
+          "description": "Row or record identifier within the source file (e.g. 'row_142', 'sheet:Autorisation:row:14')."
         },
         "parserVersion": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": ["string", "null"],
+          "description": "Version of the normalization parser that produced this object (e.g. '1.4.2')."
         }
       },
       "additionalProperties": false

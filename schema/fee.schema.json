@@ -2,6 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://dimbinirina.dev/schemas/procedures/fee.schema.json",
   "title": "Service Fee v2",
+  "description": "Defines the fee structure for an administrative procedure. Embedded in the root AdministrativeProcedure record. Merges cost and pricing into a single model with explicit rules and a computed summary.",
   "type": "object",
   "required": [
     "schemaVersion",
@@ -14,157 +15,97 @@
   "properties": {
     "schemaVersion": {
       "type": "string",
-      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Semantic version of the fee schema used to produce this object (e.g. '2.0.0')."
     },
     "generatedAt": {
       "type": "string",
-      "format": "date-time"
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of when this fee object was generated or last normalized."
     },
     "currency": {
       "type": "string",
-      "enum": [
-        "MGA"
-      ]
+      "enum": ["MGA"],
+      "description": "ISO 4217 currency code for all monetary values in this record. Currently constrained to MGA (Malagasy Ariary)."
     },
     "model": {
       "type": "string",
-      "enum": [
-        "fixed",
-        "conditional",
-        "range",
-        "composite",
-        "percentage",
-        "unknown"
-      ]
+      "enum": ["fixed", "conditional", "range", "composite", "percentage", "unknown"],
+      "description": "High-level classification of the fee structure. 'fixed': single flat amount. 'conditional': amount depends on applicant or request attributes. 'range': amount falls within a defined min-max band. 'composite': multiple fee components that sum together. 'percentage': amount is a percentage of a base value. 'unknown': fee information could not be reliably extracted — triggers BR-010 warning if a payment step exists."
     },
     "rules": {
       "type": "array",
+      "description": "List of fee rules that together define the full pricing logic. MUST contain exactly fee.summary.ruleCount entries (BR-005). An empty array is valid for free procedures (model should be 'fixed', amount 0).",
       "items": {
         "type": "object",
-        "required": [
-          "ruleId",
-          "type"
-        ],
+        "required": ["ruleId", "type"],
+        "description": "A single fee rule. The required fields beyond ruleId and type depend on the rule type: 'fixed' requires amount, 'range' requires minAmount and maxAmount, 'percentage' requires percentage.",
         "properties": {
           "ruleId": {
             "type": "string",
-            "pattern": "^rule_[a-zA-Z0-9_-]+$"
+            "pattern": "^rule_[a-zA-Z0-9_-]+$",
+            "description": "Stable unique identifier for this fee rule within the procedure. Pattern: rule_ followed by alphanumerics, hyphens, or underscores (e.g. 'rule_fixed_base', 'rule_range_enterprise')."
           },
           "type": {
             "type": "string",
-            "enum": [
-              "fixed",
-              "range",
-              "percentage",
-              "component",
-              "unknown"
-            ]
+            "enum": ["fixed", "range", "percentage", "component", "unknown"],
+            "description": "Rule type. 'fixed': flat amount defined by amount field. 'range': bounded amount defined by minAmount and maxAmount. 'percentage': proportion defined by percentage field. 'component': named part of a composite fee, defined by componentLabel and amount. 'unknown': could not be classified."
           },
           "amount": {
-            "type": [
-              "number",
-              "null"
-            ],
-            "minimum": 0
+            "type": ["number", "null"],
+            "minimum": 0,
+            "description": "Flat fee amount in the procedure's currency. Required when type is 'fixed' or 'component'. Must be >= 0 (BR-006)."
           },
           "minAmount": {
-            "type": [
-              "number",
-              "null"
-            ],
-            "minimum": 0
+            "type": ["number", "null"],
+            "minimum": 0,
+            "description": "Lower bound of the fee range. Required when type is 'range'. Must be <= maxAmount (BR-007). Must be >= 0 (BR-006)."
           },
           "maxAmount": {
-            "type": [
-              "number",
-              "null"
-            ],
-            "minimum": 0
+            "type": ["number", "null"],
+            "minimum": 0,
+            "description": "Upper bound of the fee range. Required when type is 'range'. Must be >= minAmount (BR-007). Must be >= 0 (BR-006)."
           },
           "percentage": {
-            "type": [
-              "number",
-              "null"
-            ],
+            "type": ["number", "null"],
             "minimum": 0,
-            "maximum": 100
+            "maximum": 100,
+            "description": "Fee as a percentage of a base value (0–100). Required when type is 'percentage'. The base value is described in the condition or appliesTo field."
           },
           "condition": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"],
+            "description": "Free-text description of the condition under which this rule applies (e.g. 'Pour les entreprises de plus de 10 salariés'). Used for conditional rules."
           },
           "appliesTo": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"],
+            "description": "Free-text description of what the fee applies to (e.g. 'Valeur déclarée du bien', 'Capital social'). Used for percentage rules to describe the base."
           },
           "componentLabel": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"],
+            "description": "Human-readable name of this fee component. Used when type is 'component' within a composite fee (e.g. 'Frais de dossier', 'Taxe de timbre')."
           },
           "confidence": {
             "type": "string",
-            "enum": [
-              "high",
-              "medium",
-              "low"
-            ]
+            "enum": ["high", "medium", "low"],
+            "description": "Normalization confidence for this rule's data. 'high': extracted reliably. 'medium': extracted with some uncertainty. 'low': extracted with significant uncertainty — manual review recommended."
           },
           "sourceText": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"],
+            "description": "Original text from the source document that this rule was extracted from. Preserved for traceability."
           }
         },
         "allOf": [
           {
-            "if": {
-              "properties": {
-                "type": {
-                  "const": "fixed"
-                }
-              }
-            },
-            "then": {
-              "required": [
-                "amount"
-              ]
-            }
+            "if": { "properties": { "type": { "const": "fixed" } } },
+            "then": { "required": ["amount"] }
           },
           {
-            "if": {
-              "properties": {
-                "type": {
-                  "const": "range"
-                }
-              }
-            },
-            "then": {
-              "required": [
-                "minAmount",
-                "maxAmount"
-              ]
-            }
+            "if": { "properties": { "type": { "const": "range" } } },
+            "then": { "required": ["minAmount", "maxAmount"] }
           },
           {
-            "if": {
-              "properties": {
-                "type": {
-                  "const": "percentage"
-                }
-              }
-            },
-            "then": {
-              "required": [
-                "percentage"
-              ]
-            }
+            "if": { "properties": { "type": { "const": "percentage" } } },
+            "then": { "required": ["percentage"] }
           }
         ],
         "additionalProperties": false
@@ -172,6 +113,7 @@
     },
     "summary": {
       "type": "object",
+      "description": "Precomputed summary of the fee structure for fast display and filtering. MUST be consistent with the rules array: ruleCount MUST equal len(rules) (BR-005), and monetary bounds MUST respect BR-006 and BR-007.",
       "required": [
         "isConditional",
         "minAmount",
@@ -181,71 +123,56 @@
       ],
       "properties": {
         "isConditional": {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "True if the applicable fee amount depends on applicant or request attributes. Derived from the presence of conditional rules."
         },
         "minAmount": {
-          "type": [
-            "number",
-            "null"
-          ],
-          "minimum": 0
+          "type": ["number", "null"],
+          "minimum": 0,
+          "description": "Minimum possible fee amount across all rules, in MGA. Null if not determinable (e.g. model is 'unknown' or 'percentage'). Must be <= maxAmount when both are present (BR-007)."
         },
         "maxAmount": {
-          "type": [
-            "number",
-            "null"
-          ],
-          "minimum": 0
+          "type": ["number", "null"],
+          "minimum": 0,
+          "description": "Maximum possible fee amount across all rules, in MGA. Null if not determinable. Must be >= minAmount when both are present (BR-007)."
         },
         "defaultAmount": {
-          "type": [
-            "number",
-            "null"
-          ],
-          "minimum": 0
+          "type": ["number", "null"],
+          "minimum": 0,
+          "description": "The most common or baseline fee amount for display purposes, in MGA. For fixed fees: equals amount. For conditional fees: the amount that applies to the most common case. Null if not determinable."
         },
         "ruleCount": {
           "type": "integer",
-          "minimum": 0
+          "minimum": 0,
+          "description": "Number of rules in the rules array. MUST equal len(rules) exactly (BR-005). Used to detect summary/rules inconsistency."
         }
       },
       "additionalProperties": false
     },
     "source": {
       "type": "object",
+      "description": "Provenance metadata identifying the source text and parser that produced this fee object.",
       "properties": {
         "rawText": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": ["string", "null"],
+          "description": "Original fee text as extracted verbatim from the source document (e.g. 'Droits de timbre: 2000 Ar + frais de dossier: 500 Ar')."
         },
         "rawValues": {
           "type": "array",
-          "items": {
-            "type": [
-              "number",
-              "string"
-            ]
-          }
+          "items": { "type": ["number", "string"] },
+          "description": "List of raw numeric or string values extracted from the source before normalization (e.g. [2000, 500, 'gratuit'])."
         },
         "sourceFile": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": ["string", "null"],
+          "description": "Filename or path of the source document."
         },
         "sourceRowId": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": ["string", "null"],
+          "description": "Row or record identifier within the source file."
         },
         "parserVersion": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": ["string", "null"],
+          "description": "Version of the normalization parser that produced this object."
         }
       },
       "additionalProperties": false
