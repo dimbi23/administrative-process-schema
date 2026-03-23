@@ -1,0 +1,160 @@
+{
+  "version": "1.0",
+  "stepTypes": [
+    {
+      "code": "submission",
+      "label": "Dépôt/Saisie",
+      "keywords": [
+        "depot",
+        "dépôt",
+        "demande",
+        "soumission",
+        "formulaire"
+      ]
+    },
+    {
+      "code": "verification",
+      "label": "Vérification",
+      "keywords": [
+        "verification",
+        "vérification",
+        "controle",
+        "contrôle",
+        "recevabilite"
+      ]
+    },
+    {
+      "code": "inspection",
+      "label": "Inspection/Visite",
+      "keywords": [
+        "visite",
+        "inspection",
+        "metrage",
+        "descente"
+      ]
+    },
+    {
+      "code": "payment",
+      "label": "Paiement",
+      "keywords": [
+        "paiement",
+        "versement",
+        "droit",
+        "quittance",
+        "caisse"
+      ]
+    },
+    {
+      "code": "instruction",
+      "label": "Instruction/Traitement",
+      "keywords": [
+        "traitement",
+        "instruction",
+        "etude",
+        "analyse"
+      ]
+    },
+    {
+      "code": "approval",
+      "label": "Visa/Signature",
+      "keywords": [
+        "visa",
+        "signature",
+        "approbation",
+        "validation"
+      ]
+    },
+    {
+      "code": "decision",
+      "label": "Décision",
+      "keywords": [
+        "decision",
+        "accord",
+        "refus",
+        "acceptation"
+      ]
+    },
+    {
+      "code": "notification",
+      "label": "Notification",
+      "keywords": [
+        "notification",
+        "publication",
+        "envoi",
+        "informer"
+      ]
+    },
+    {
+      "code": "delivery",
+      "label": "Délivrance/Retrait",
+      "keywords": [
+        "delivrance",
+        "délivrance",
+        "obtention",
+        "retrait",
+        "remise"
+      ]
+    },
+    {
+      "code": "archival",
+      "label": "Enregistrement/Archivage",
+      "keywords": [
+        "enregistrement",
+        "archivage",
+        "immatriculation"
+      ]
+    },
+    {
+      "code": "other",
+      "label": "Autre",
+      "keywords": []
+    }
+  ],
+  "actors": {
+    "citizen": [
+      "demandeur",
+      "citoyen",
+      "usager",
+      "client"
+    ],
+    "business": [
+      "entreprise",
+      "societe",
+      "société",
+      "operateur",
+      "opérateur"
+    ],
+    "administration": [
+      "service",
+      "direction",
+      "ministere",
+      "ministère",
+      "guichet",
+      "secrétariat",
+      "dg",
+      "dr"
+    ]
+  },
+  "channels": {
+    "online": [
+      "mail",
+      "email",
+      "en ligne",
+      "online",
+      "site web",
+      "plateforme"
+    ],
+    "offline": [
+      "guichet",
+      "physique",
+      "porte",
+      "accueil",
+      "secretariat",
+      "secrétariat"
+    ],
+    "hybrid": [
+      "physique ou par mail",
+      "physique et en ligne"
+    ]
+  }
+}
