@@ -1,8 +1,8 @@
 # 0. Document Control
 
 - **Specification:** Administrative Process Schema Standard
-- **Status:** Draft
-- **Current version:** 2.0.0-draft.6
+- **Status:** Release Candidate
+- **Current version:** 2.0.0-rc1
 - **Maintainer:** Administrative Process Schema Working Group
 - **Last updated:** 2026-03-23
 

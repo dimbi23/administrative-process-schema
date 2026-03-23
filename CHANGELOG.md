@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog and the project follows Semantic Versioning.
 
+## [2.0.0-rc1] - 2026-03-23
+
+### Release candidate
+
+This release freezes the spec for initial implementation consumption. All normative schemas, business rules, taxonomy reference data, and architectural decisions are stable. Implementations MAY begin consuming this spec; breaking changes require a MAJOR version bump.
+
+### Changed
+- **`VERSION`**: bumped from `0.1.0` to `2.0.0-rc1`
+- **`0-document-control.md`**: status updated to Release Candidate; version updated to `2.0.0-rc1`
+- **`README.md`**: pipeline diagram updated to show WBB Service layer and monorepo services; satellite table, BR count, taxonomy section, current status table, and validator usage section updated
+
 ## [2.0.0-draft.6] - 2026-03-23
 
 ### Added
