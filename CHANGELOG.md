@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog and the project follows Semantic Versioning.
 
+## [2.0.0-draft.4] - 2026-03-23
+
+### Added
+- **`1-architecture-and-scope.md` §1.5**: service topology — Nx monorepo with four apps (`procedures-api`, `case-api`, `wbb-service`, `portal`) and three shared libs (`schemas`, `dto`, `events`); Nx enforce-module-boundaries rules; inter-service communication pattern
+- **`1-architecture-and-scope.md` §1.6**: procedure → process derivation model — `AdministrativeProcedure` (institutional layer) derives via `ExecutionMapping` to `ProcessDefinition` (WBB layer); in-flight instance version freeze rule
+- **`5-workflow-execution-mapping.md` §5.6**: deployment lifecycle — four `deploymentStatus` states (`draft`, `validated`, `deployed`, `deprecated`); version freeze rule; procedure prerequisite constraint
+- **`schema/execution-mapping.schema.json`**: `deploymentStatus` enum field and `processId` field (set by WBB Service on deployment)
+
+### Changed
+- **`1-architecture-and-scope.md` §1.4**: pipeline diagram updated — WBB Service is an explicit layer between Case API and n8n; n8n is shown as internal implementation detail with "internal — never exposed outside WBB Service" annotation
+- **`1-architecture-and-scope.md` §1.7** (was §1.5): satellite architecture updated — execution-mapping ownership transferred to "WBB Service team"; access control section added (form-definition is public; execution-mapping MUST NOT be served in Public API Profile)
+- **`5-workflow-execution-mapping.md` §5.1**: WBB Service introduced as the consumer of the execution-mapping satellite; n8n repositioned as internal to WBB Service; `connector` vocabulary described as WBB Service boundary, not n8n level
+- **`5-workflow-execution-mapping.md` §5.3**: `connector` field description updated — references WBB Service action handler, not n8n node directly
+- **`govstack-wbb-profile.md` §6**: WBB Service introduced as the GovStack WBB contract implementor; n8n repositioned as internal execution engine delegated by the WBB Service; engine-swap note added
+- **`schema/execution-mapping.schema.json`**: `connector` field description updated to reference WBB Service
+- **`0-document-control.md` §0.3**: execution-mapping satellite description updated — "WBB Service" replaces "n8n"
+
 ## [2.0.0-draft.3] - 2026-03-23
 
 ### Added

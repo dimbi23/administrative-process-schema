@@ -33,6 +33,15 @@
       "type": "string",
       "format": "date-time"
     },
+    "deploymentStatus": {
+      "type": "string",
+      "enum": ["draft", "validated", "deployed", "deprecated"],
+      "description": "Lifecycle state of this execution mapping within the WBB Service. 'draft': derived from the catalog but not yet reviewed. 'validated': reviewed and ready to be registered as a ProcessDefinition in the WBB Service. 'deployed': actively registered and executable in the WBB Service (processId is set). 'deprecated': superseded by a newer mapping version; no new instances may be started."
+    },
+    "processId": {
+      "type": ["string", "null"],
+      "description": "The GovStack ProcessDefinition identifier assigned by the WBB Service when this mapping is deployed. Null until deploymentStatus reaches 'deployed'. This value is set by the WBB Service, not by the catalog or normalization pipeline."
+    },
     "trigger": {
       "type": "object",
       "description": "Defines how this workflow process is initiated. Aligns with GovStack WBB required execution methods: API-based, manual, and time-based. If absent, defaults to api trigger.",
@@ -92,7 +101,7 @@
           },
           "connector": {
             "type": ["string", "null"],
-            "description": "Identifier of the n8n node or connector to invoke (e.g. 'http', 'email', 'form'). Required when action is custom."
+            "description": "Identifier of the WBB Service action handler or integration to invoke (e.g. 'http', 'email', 'form', 'approval'). The WBB Service maps this to the appropriate n8n node internally. Required when action is 'custom'."
           },
           "inputMapping": {
             "type": "object",

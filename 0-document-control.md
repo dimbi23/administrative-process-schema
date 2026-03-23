@@ -2,7 +2,7 @@
 
 - **Specification:** Administrative Process Schema Standard
 - **Status:** Draft
-- **Current version:** 2.0.0-draft.2
+- **Current version:** 2.0.0-draft.4
 - **Maintainer:** Administrative Process Schema Working Group
 - **Last updated:** 2026-03-23
 
@@ -28,7 +28,7 @@ This specification defines three categories of schema artifacts linked by `servi
 
 **Satellite schemas (draft):**
 - `./schema/form-definition.schema.json` — citizen form field definitions for dynamic form generation
-- `./schema/execution-mapping.schema.json` — per-step n8n execution mapping for workflow orchestration
+- `./schema/execution-mapping.schema.json` — per-step execution mapping for the WBB Service (process derivation and workflow orchestration)
 
 Satellite schemas are normative artifacts at draft status. They share the `serviceId` linking key with the root catalog schema. Their governance follows the same working group process defined in `2-conformance-and-governance.md`.
 

@@ -215,9 +215,13 @@ GovStack REQUIRES sync initiation. Currently all case submissions are async.
 
 ---
 
-## 6. n8n as the WBB engine
+## 6. WBB Service architecture and n8n as execution engine
 
-n8n is used as the Workflow Building Block execution engine. This table shows how GovStack WBB concepts map to n8n constructs:
+The GovStack WBB contract is implemented by the **WBB Service** — a dedicated NestJS application that exposes GovStack API signatures and delegates workflow execution internally to **n8n** via the n8n REST API. n8n is an internal implementation detail of the WBB Service: no other service communicates with n8n directly, and n8n credentials are scoped exclusively to the WBB Service.
+
+This separation means the WBB Service can be re-pointed to a different execution engine (Temporal, Camunda, Prefect) without changing any API contract, satellite schema, or Case API code. The execution-mapping satellite schema describes behavior at the WBB Service boundary; the WBB Service is responsible for translating that vocabulary to engine-specific constructs.
+
+This table shows how GovStack WBB concepts map to WBB Service responsibilities and, internally, to n8n constructs:
 
 | GovStack / BPMN concept | n8n construct |
 |---|---|
