@@ -1,0 +1,20 @@
+documentCode,label_fr,label_en,family,subfamily,description,issuingAuthority,acceptedFormats,defaultRequirementLevel,defaultMaxAgeDays,sensitivity,active,notes
+DOC_ID_CIN,Carte d'identité nationale (CIN),National ID card,Identité,Pièce d'identité,Preuve officielle de l'identité du demandeur,Autorité nationale compétente,original|copie_simple|copie_certifiee|pdf_scan,required,,high,true,
+DOC_CIV_BIRTH,Acte de naissance,Birth certificate,État civil,Naissance,Extrait ou copie d'acte de naissance,Centre d'état civil,original|copie_certifiee|pdf_scan,conditional,90,high,true,
+DOC_RES_CERT,Certificat de résidence,Proof of residence,Résidence,Adresse,Justificatif officiel de résidence,Autorité locale compétente,original|copie_simple|pdf_scan,conditional,90,medium,true,
+DOC_SUP_ENVELOPE_A3,Enveloppe A3,A3 envelope,Conditionnement administratif,Fournitures de dépôt,Enveloppe de grand format demandée pour le dépôt papier,N/A,physique,conditional,,low,true,"Fourniture matérielle, non-preuve"
+DOC_SUP_STAMP,Timbre / timbre fiscal,Stamp / fiscal stamp,Conditionnement administratif,Fournitures de dépôt,Timbre administratif/fiscal exigé pour le traitement,Administration fiscale / points de vente autorisés,physique,conditional,,low,true,Fourniture matérielle/valeur fiscale selon contexte
+DOC_SUP_FOLDING_FILE,Chemise dossier,File folder,Conditionnement administratif,Fournitures de dépôt,Chemise/cartonnée pour classement du dossier papier,N/A,physique,conditional,,low,true,"Fourniture matérielle, non-preuve"
+DOC_REQ_APPLICATION_LETTER,Lettre de demande,Application letter,Demande administrative,Saisine,Lettre écrite du demandeur sollicitant le service,Demandeur,papier|pdf_scan,required,,low,true,
+DOC_REQ_APPLICATION_FORM,Formulaire de demande,Application form,Demande administrative,Saisine,Formulaire standard de demande à compléter,Administration concernée,papier|pdf,required,,low,true,
+DOC_PAY_BANK_SLIP,Bordereau de versement bancaire,Bank deposit slip,Paiement,Preuve de paiement,Preuve de versement bancaire des droits/frais,Banque,original|copie|pdf_scan,required,,low,true,
+DOC_PAY_INVOICE,Facture,Invoice,Paiement,Justificatif,Facture liée à l'achat/prestation,Fournisseur,original|copie|pdf,conditional,,low,true,
+DOC_ID_PASSPORT,Passeport,Passport,Identité,Pièce d'identité,Passeport du demandeur,Autorité nationale compétente,original|copie|pdf_scan,conditional,,high,true,
+DOC_VEH_REG_CARD,Carte grise,Vehicle registration card,Transport,Immatriculation,Carte grise du véhicule,Autorité transport,original|copie|pdf_scan,conditional,,medium,true,
+DOC_EDU_TRANSCRIPT,Relevé de notes,Academic transcript,Éducation,Résultats académiques,Relevé de notes officiel,Établissement d'enseignement,original|copie_certifiee|pdf_scan,conditional,,medium,true,
+DOC_EDU_CERT_SUCCESS,Attestation de réussite,Certificate of achievement,Éducation,Certification,Attestation officielle de réussite,Établissement d'enseignement,original|copie|pdf_scan,conditional,,medium,true,
+DOC_EDU_RESEARCH_MEMOIR,Mémoire de recherche,Research dissertation,Éducation,Recherche,Mémoire/travaux de recherche,Demandeur / établissement,papier|pdf,conditional,,medium,true,
+DOC_HEALTH_MED_FORM,Fiche médicale,Medical form,Santé,Dossier médical,Fiche médicale requise par la procédure,Établissement de santé,original|copie|pdf_scan,conditional,,high,true,
+DOC_TECH_ANALYSIS_REPORT,Bulletin / rapport d'analyse,Analysis report,Technique,Analyse,Rapport ou bulletin d'analyse technique/laboratoire,Laboratoire / organisme technique,original|copie|pdf,conditional,,medium,true,
+DOC_AUTH_INTRO_LETTER,Lettre d'introduction,Introduction letter,Demande administrative,Saisine,Lettre d'introduction ou d'autorisation,Autorité/encadreur/organisation,original|copie|pdf,conditional,,low,true,
+DOC_ID_PHOTO,Photo d'identité récente,Recent ID photo,Identité,Pièce d'identité,Photo d'identité récente du demandeur,Demandeur,photo|scan|jpg|png,conditional,180,low,true,

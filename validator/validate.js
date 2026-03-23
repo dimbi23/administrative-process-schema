@@ -317,7 +317,7 @@ ${C.bold}Exit codes:${C.reset}
   2   Execution error (file not found, parse error, unknown schema type)
 
 ${C.bold}Examples:${C.reset}
-  node validate.js ../examples/valid-public.json --taxonomy ../../document_taxonomy.csv
+  node validate.js ../examples/valid-public.json --taxonomy ../taxonomy/document_taxonomy.csv
   node validate.js ../examples/valid-internal.json --profile internal
   node validate.js ../examples/valid-form-definition.json --catalog ../examples/valid-public.json
 `)

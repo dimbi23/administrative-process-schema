@@ -22,7 +22,7 @@ Each `documentsRequired[]` entry MUST include `documentTypeCode`, `label`, and `
 
 The `documentTypeCode` field MUST use a canonical code from the document taxonomy (`document_taxonomy.csv`, column `documentCode`, where `active=true`). This taxonomy is the authoritative controlled vocabulary for document type codes across the entire pipeline — catalog records, form-definition satellites, and normalization tooling all reference the same codes. Non-conformant codes (e.g., ad-hoc strings like `CIN_COPY`) are invalid and MUST be rejected (BR-013).
 
-The taxonomy follows the naming convention `DOC_[CATEGORY]_[SUBCATEGORY]` (e.g., `DOC_ID_CIN`, `DOC_RES_CERT`, `DOC_PAY_BANK_SLIP`). The full taxonomy is maintained at `../document_taxonomy.csv` relative to the spec root.
+The taxonomy follows the naming convention `DOC_[CATEGORY]_[SUBCATEGORY]` (e.g., `DOC_ID_CIN`, `DOC_RES_CERT`, `DOC_PAY_BANK_SLIP`). The full taxonomy is maintained at `./taxonomy/document_taxonomy.csv` within the spec repository. The synonyms table (raw label → canonical code mappings used by the normalization pipeline) is at `./taxonomy/document_synonyms.csv`.
 
 ## 3.5 Business consistency rules (core)
 

@@ -32,6 +32,10 @@ This specification defines three categories of schema artifacts linked by `servi
 
 Satellite schemas are normative artifacts at draft status. They share the `serviceId` linking key with the root catalog schema. Their governance follows the same working group process defined in `2-conformance-and-governance.md`.
 
+**Reference data (normative):**
+- `./taxonomy/document_taxonomy.csv` — canonical document type code vocabulary (source of truth for `documentTypeCode`, enforced by BR-013)
+- `./taxonomy/document_synonyms.csv` — raw label → canonical code mappings used by the normalization pipeline
+
 ## 0.4 Governance reference
 
 Schema evolution is managed by a working group under the governance rules defined in `2-conformance-and-governance.md`.
