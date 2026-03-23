@@ -101,7 +101,7 @@
           },
           "connector": {
             "type": ["string", "null"],
-            "description": "Identifier of the WBB Service action handler or integration to invoke (e.g. 'http', 'email', 'form', 'approval'). The WBB Service maps this to the appropriate n8n node internally. Required when action is 'custom'."
+            "description": "Identifier of the WBB Service action handler or integration to invoke (e.g. 'http', 'email', 'form', 'approval'). The WBB Service maps this to an engine-specific action internally. Required when action is 'custom'."
           },
           "inputMapping": {
             "type": "object",

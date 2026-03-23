@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://dimbinirina.dev/schemas/procedures/workflow.schema.json",
   "title": "Service Workflow v2",
-  "description": "Defines the ordered sequence of steps that constitute an administrative procedure's execution lifecycle. Embedded in the root AdministrativeProcedure record. The execution-mapping satellite schema maps each stepId to concrete n8n actions.",
+  "description": "Defines the ordered sequence of steps that constitute an administrative procedure's execution lifecycle. Embedded in the root AdministrativeProcedure record. The execution-mapping satellite schema maps each stepId to concrete WBB Service actions.",
   "type": "object",
   "required": [
     "schemaVersion",

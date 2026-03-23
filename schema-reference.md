@@ -365,7 +365,7 @@ Each item in `executionMapping.steps`. One entry per workflow step.
 |---|---|---|---|
 | `stepId` | string | MUST | Must match a `stepId` in the catalog workflow. Pattern: `^step_[a-z0-9_-]+$`. |
 | `action` | string (enum) | MUST | Execution action type. See table below. `custom` requires `connector`. |
-| `connector` | string \| null | SHOULD | WBB Service action handler or integration to invoke (e.g. `"http"`, `"email"`, `"form"`, `"approval"`). WBB Service maps this to an n8n node internally. Required when `action=custom`. |
+| `connector` | string \| null | SHOULD | WBB Service action handler or integration to invoke (e.g. `"http"`, `"email"`, `"form"`, `"approval"`). WBB Service maps this to an engine-specific action internally. Required when `action=custom`. |
 | `inputMapping` | object | SHOULD | Key-value map: connector input parameter ← case context variable (e.g. `{"recipientEmail": "{{case.applicant.email}}"}`). |
 | `outputMapping` | object | SHOULD | Key-value map: case context variable ← connector output (e.g. `{"caseId": "{{case.id}}"}`). |
 | `retryPolicy` | object | MAY | Retry behavior on transient failure. `maxAttempts` (1–10), `backoffSeconds` (≥ 1). |

@@ -100,7 +100,7 @@ valid-public.json  (AdministrativeProcedure, status: active)
             processId: "proc_mid_example_002_v1"
             WBB Service registered this as a ProcessDefinition
             Case API calls POST /processes/MID-EXAMPLE-002/start
-            WBB Service executes via n8n internally
+            WBB Service delegates to execution engine internally
 ```
 
 ---

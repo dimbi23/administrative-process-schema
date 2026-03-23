@@ -43,49 +43,48 @@ Institution (raw data)
 AdministrativeProcedure catalog record          ← this spec (root + satellite schemas)
     │ publication
     ▼
-Procedures API (NestJS)  ◄──►  Portal (Next.js + Payload CMS)
+Procedures API  ◄──►  Portal
     │ form generation
     ▼
 Citizen form  ← driven by form-definition satellite
     │ case submission
     ▼
-Case API (NestJS)  ← case lifecycle, state machine, audit trail
+Case API  ← case lifecycle, state machine, audit trail
     │ POST /processes/{serviceId}/start   [GovStack WBB signature]
     ▼
-WBB Service (NestJS)  ← GovStack WBB contract, process derivation, n8n adapter
-    │ n8n REST API   [internal — never exposed outside WBB Service]
+WBB Service  ← GovStack WBB contract, process derivation, execution engine adapter
+    │ execution engine   [internal — never exposed outside WBB Service]
     ▼
-n8n  ← execution engine (internal implementation detail)
+Workflow execution engine  ← internal implementation detail
     │ callback webhook
     ▼
 Case API  ← state update + audit event
 ```
 
-The architecture follows a strict separation of concerns. The catalog schema carries policy-bearing logic (what must happen). The satellite schemas extend that contract for specific downstream consumers without modifying the catalog. The WBB Service implements the GovStack workflow contract and delegates execution internally to n8n. The Case API preserves legal-operational memory (what actually happened).
+The architecture follows a strict separation of concerns. The catalog schema carries policy-bearing logic (what must happen). The satellite schemas extend that contract for specific downstream consumers without modifying the catalog. The WBB Service implements the GovStack workflow contract and delegates execution internally to a workflow engine. The Case API preserves legal-operational memory (what actually happened).
 
 This separation protects public accountability: execution engine internals and form renderers may evolve independently, but normative procedure semantics and case traceability MUST remain stable and inspectable.
 
 ## 1.5 Service topology
 
-The implementation is organized as an Nx monorepo with pnpm workspaces. Services are independently deployable units on Kubernetes; shared logic lives in libraries consumed by the services.
+The platform is organized as four independently deployable services backed by shared libraries.
 
 ```
-apps/
-  procedures-api/   NestJS — catalog read API, satellite serving (public + internal)
-  case-api/         NestJS — case lifecycle, state machine, audit trail
-  wbb-service/      NestJS — GovStack WBB API, process derivation, n8n adapter
-  portal/           Next.js + Payload CMS — citizen portal + admin back-office
+Services:
+  Procedures API   REST API — catalog read, satellite serving (public + internal profiles)
+  Case API         REST API — case lifecycle, state machine, audit trail
+  WBB Service      REST API — GovStack WBB contract, process derivation, execution engine adapter
+  Portal           Web application — citizen portal + administration back-office
 
-libs/
-  schemas/          TypeScript types generated from the JSON Schemas in this spec
-  dto/              shared request/response DTOs between services
-  events/           inter-service event contracts (case.started, process.completed, etc.)
+Shared libraries:
+  schemas          types generated from the JSON Schemas in this spec
+  dto              shared request/response contracts between services
+  events           inter-service event contracts (case.started, process.completed, etc.)
 ```
 
-**Dependency rules (Nx enforce-module-boundaries):**
-- Apps MUST NOT import from other apps.
-- Apps MAY import from any lib.
-- The WBB Service is the sole holder of n8n credentials; no other service communicates with n8n directly.
+**Dependency rules:**
+- Services MUST NOT depend directly on other services' internals.
+- The WBB Service is the sole service with access to the workflow execution engine; no other service communicates with it directly.
 
 **Inter-service communication:**
 - Case API → WBB Service: synchronous HTTP using GovStack WBB API signatures.
@@ -100,7 +99,7 @@ AdministrativeProcedure  (institutional layer — this spec)
     └── ExecutionMapping ─── derives ──► ProcessDefinition  (WBB layer — GovStack)
                                               │
                                               ▼
-                                         ProcessInstance  (runtime — Case API + n8n)
+                                         ProcessInstance  (runtime — Case API + execution engine)
 ```
 
 The `ExecutionMapping` satellite is the derivation artifact. It carries the per-step execution semantics needed by the WBB Service to register and activate a `ProcessDefinition`. A procedure definition MUST exist and be `status: active` before an `ExecutionMapping` can be deployed. A case instance MUST reference the `catalogSchemaVersion` of the procedure it was started with, so in-flight cases are not affected by subsequent procedure version changes.

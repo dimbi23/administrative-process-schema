@@ -8,7 +8,7 @@ The catalog schema defines process semantics at design time: what steps exist, i
 
 These are separate artifacts linked by `serviceId`. The catalog schema MUST NOT be modified to carry run-time execution concerns. The execution mapping MUST NOT redefine the business semantics of any step.
 
-The execution mapping is consumed exclusively by the **WBB Service** — a dedicated NestJS application that implements the GovStack Workflow Building Block API contract and translates it internally to n8n workflow executions via the n8n REST API. The mapping vocabulary (`action`, `connector`, `humanTask`) describes behavior at the WBB Service boundary, not at the n8n engine level. n8n is an internal implementation detail of the WBB Service and is never exposed to other services.
+The execution mapping is consumed exclusively by the **WBB Service** — the service that implements the GovStack Workflow Building Block API contract and delegates execution internally to a workflow execution engine. The mapping vocabulary (`action`, `connector`, `humanTask`) describes behavior at the WBB Service boundary; the WBB Service is responsible for translating that vocabulary to engine-specific constructs. The execution engine is an internal implementation detail of the WBB Service and is never exposed to other services.
 
 ## 5.2 Execution mapping structure
 
@@ -30,7 +30,7 @@ Each entry in `steps` corresponds to one step in the catalog workflow, identifie
 |---|---|---|
 | `stepId` | MUST | Matches the `stepId` in the catalog workflow. |
 | `action` | MUST | The execution action type. See §5.4. |
-| `connector` | SHOULD | Identifier of the WBB Service action handler or integration to invoke (e.g., `http`, `form`, `email`, `approval`). Required when `action` is `custom`. The WBB Service maps this to the appropriate n8n node internally. |
+| `connector` | SHOULD | Identifier of the WBB Service action handler or integration to invoke (e.g., `http`, `form`, `email`, `approval`). Required when `action` is `custom`. The WBB Service maps this to an engine-specific action internally. |
 | `inputMapping` | SHOULD | Key-value map from case context variables to connector input parameters. |
 | `outputMapping` | SHOULD | Key-value map from connector output to case context variables. |
 | `retryPolicy` | MAY | Object with `maxAttempts` (integer) and `backoffSeconds` (integer). |

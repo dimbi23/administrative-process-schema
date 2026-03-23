@@ -9,15 +9,14 @@ Institution (raw data)
     ↓ normalization
 AdministrativeProcedure catalog record  ← this spec
     ↓ publication
-Procedures API (NestJS)  ◄──►  Portal (Next.js + Payload CMS)
+Procedures API  ◄──►  Portal
     ↓ form generation
 Citizen form  (driven by form-definition satellite)
     ↓ case submission
-Case API (NestJS)
+Case API
     ↓ GovStack WBB API
-WBB Service (NestJS)  ← GovStack WBB contract, process derivation
-    ↓ n8n REST API  [internal]
-n8n  ← execution engine
+WBB Service  ← GovStack WBB contract, process derivation
+    ↓ execution engine  [internal]
     ↓ case lifecycle
 Audit trail / notifications / decision delivery
 ```
@@ -26,7 +25,7 @@ Audit trail / notifications / decision delivery
 
 - **Publication**: a procedure record can be published to a portal or API in a consistent, validated format
 - **Form generation**: the form-definition satellite drives dynamic citizen-facing forms without hard-coding field logic
-- **Workflow execution**: the execution-mapping satellite drives the WBB Service — which implements the GovStack Workflow Building Block contract and delegates execution to n8n internally
+- **Workflow execution**: the execution-mapping satellite drives the WBB Service — which implements the GovStack Workflow Building Block contract and delegates execution to a workflow engine internally
 - **Governance and analytics**: friction scoring, SLA tracking, and cost transparency are built into the data model
 
 ## Repository contents

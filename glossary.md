@@ -19,7 +19,7 @@ The unique identifier of a procedure record. Acts as the cross-schema linking ke
 The five-stage processing chain: (1) normalization of raw institutional data, (2) catalog publication to the portal, (3) citizen form generation, (4) workflow building block integration, (5) case orchestration.
 
 ## Building block
-A reusable, independently deployable system component in the pipeline. The workflow building block is the n8n-backed orchestration component that executes case instances using the execution mapping as its configuration contract.
+A reusable, independently deployable system component in the pipeline. The workflow building block is the orchestration component that executes case instances using the execution mapping as its configuration contract.
 
 ## Form definition
 A satellite schema record that defines the citizen-facing form fields for one procedure. It declares field types, labels, validation rules, and conditional display logic as a machine-readable contract for form generators. It does not define visual rendering.

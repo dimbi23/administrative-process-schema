@@ -162,7 +162,7 @@ failed ──→ retrying ──→ manual_intervention ──→ resolved or ab
 | Cron/timer trigger | REQUIRED | ✅ `trigger.type = "cron"` |
 | Exclusive gateway | RECOMMENDED | ✅ `step.transitions[]` |
 | Private data protection | REQUIRED | ✅ Per-service DB, access-controlled Case API |
-| Distributed system reliability | REQUIRED | ✅ Kubernetes + outbox pattern |
+| Distributed system reliability | REQUIRED | ✅ Container orchestration + outbox pattern |
 | REST with JSON | REQUIRED | ✅ All APIs |
 | BPMN v2.0 process modeling | REQUIRED | ❌ Deferred — see §5 |
 | BPMN diagram/XML generation | REQUIRED | ❌ Deferred — see §5 |
@@ -215,27 +215,29 @@ GovStack REQUIRES sync initiation. Currently all case submissions are async.
 
 ---
 
-## 6. WBB Service architecture and n8n as execution engine
+## 6. WBB Service architecture
 
-The GovStack WBB contract is implemented by the **WBB Service** — a dedicated NestJS application that exposes GovStack API signatures and delegates workflow execution internally to **n8n** via the n8n REST API. n8n is an internal implementation detail of the WBB Service: no other service communicates with n8n directly, and n8n credentials are scoped exclusively to the WBB Service.
+The GovStack WBB contract is implemented by the **WBB Service** — a service that exposes GovStack API signatures and delegates workflow execution internally to a workflow execution engine. The execution engine is an internal implementation detail of the WBB Service: no other service communicates with it directly, and engine credentials are scoped exclusively to the WBB Service.
 
-This separation means the WBB Service can be re-pointed to a different execution engine (Temporal, Camunda, Prefect) without changing any API contract, satellite schema, or Case API code. The execution-mapping satellite schema describes behavior at the WBB Service boundary; the WBB Service is responsible for translating that vocabulary to engine-specific constructs.
+This separation means the WBB Service can be re-pointed to a different execution engine without changing any API contract, satellite schema, or Case API code. The execution-mapping satellite schema describes behavior at the WBB Service boundary; the WBB Service is responsible for translating that vocabulary to engine-specific constructs.
 
-This table shows how GovStack WBB concepts map to WBB Service responsibilities and, internally, to n8n constructs:
+This table shows how GovStack WBB concepts map to WBB Service responsibilities:
 
-| GovStack / BPMN concept | n8n construct |
+| GovStack / BPMN concept | WBB Service responsibility |
 |---|---|
-| Process definition | n8n Workflow |
-| Activity (service task) | n8n Node (HTTP, Function, etc.) |
-| Activity (user task) | n8n Wait node + Case API humanTask |
-| Exclusive gateway | n8n IF node |
-| Parallel gateway | n8n Split In Batches / parallel branches |
-| Timer event | n8n Cron trigger node |
-| API trigger | n8n Webhook trigger node |
-| Error handling | n8n Error trigger node |
-| Process instance | n8n Execution |
-| Instance variables | n8n `$json` context variables |
-| Audit event | n8n HTTP node → Case API `POST /cases/:caseId/events` |
+| Process definition | Register and version a deployable process |
+| Activity (service task) | Invoke an integration or connector action |
+| Activity (user task) | Route to a human task queue; wait for completion |
+| Exclusive gateway | Evaluate transition conditions; route to matching branch |
+| Parallel gateway | Fan out to concurrent branches |
+| Timer event | Schedule execution at defined time or interval |
+| API trigger | Accept incoming HTTP request to start a process |
+| Error handling | Catch unrecoverable step failure; apply `onFailure` policy |
+| Process instance | Track execution state and current step |
+| Instance variables | Maintain case context across steps |
+| Audit event | Emit structured event to Case API on each state transition |
+
+> **Informative — reference implementation:** The reference implementation uses a self-hosted workflow automation engine to fulfill these responsibilities. The choice of engine is outside the scope of this specification.
 
 ---
 
