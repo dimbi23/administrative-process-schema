@@ -22,6 +22,8 @@ The Form Profile applies to `form-definition` satellite records. A record in thi
 
 The Execution Profile applies to `execution-mapping` satellite records. A record in this profile MUST declare a valid `serviceId` referencing a published catalog record, MUST provide a mapping entry for each workflow step in the referenced catalog record, and MUST pass satellite structural schema validation.
 
+The Execution Profile is an **Internal Profile only**. `execution-mapping` records MUST NOT be served via the Public API Profile or exposed to external consumers. They are consumed exclusively by the WBB Service. Serving an execution mapping publicly would expose internal execution infrastructure (connector identifiers, retry policies, service credentials) and is prohibited.
+
 ## 2.3 Conformance checks
 
 A catalog record is conformant when the root object validates, nested `workflow` and `fee` objects validate, and implementation-level business rules pass.
@@ -33,6 +35,8 @@ A satellite record is conformant when it validates against its satellite schema 
 The schema is governed by a **working group** composed of representatives from the institutional data team, the portal team, and the workflow building block team.
 
 The working group approves schema changes to all normative artifacts (catalog and satellite schemas), maintains normative documentation, defines blocking and non-blocking quality conditions, and approves publication profile policy. Satellite schema changes that do not affect the catalog schema MAY be approved by the owning team with working group notification rather than full approval.
+
+Satellite ownership is as follows: the `form-definition` satellite is co-owned by the portal team; the `execution-mapping` satellite is owned by the WBB Service team. Neither team may introduce changes to the catalog schema without working group approval.
 
 ## 2.5 Versioning and release policy
 

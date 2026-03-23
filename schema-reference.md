@@ -94,7 +94,7 @@ All schemas use JSON Schema Draft 2020-12. `additionalProperties: false` is enfo
 ## 2. Workflow
 
 **Schema:** `schema/workflow.schema.json`
-**Role:** Defines the ordered sequence of steps for a procedure. Embedded in `AdministrativeProcedure.workflow`. The `execution-mapping` satellite maps each `stepId` to a concrete n8n action.
+**Role:** Defines the ordered sequence of steps for a procedure. Embedded in `AdministrativeProcedure.workflow`. The `execution-mapping` satellite maps each `stepId` to a concrete WBB Service action.
 
 | Field | Type | Required | Description |
 |---|---|---|---|
@@ -137,7 +137,7 @@ Each item in `workflow.steps`.
 
 ### stepType values
 
-| Value | Typical n8n action | Description |
+| Value | WBB Service action | Description |
 |---|---|---|
 | `submission` | `case_intake` | Case intake and registration. |
 | `verification` | `document_check` | Document or eligibility check. |
@@ -340,7 +340,7 @@ Each item in `formDefinition.fields`.
 ## 9. ExecutionMapping
 
 **Schema:** `schema/execution-mapping.schema.json`
-**Role:** Satellite schema defining how each workflow step maps to an executable action in the n8n workflow building block. Linked to the catalog by `serviceId`. Provides connector references, data mappings, retry policies, and human task configurations.
+**Role:** Satellite schema defining how each workflow step maps to an executable action in the WBB Service. Linked to the catalog by `serviceId`. Provides action vocabulary, connector references, data mappings, retry policies, and human task configurations. **Internal Profile only — MUST NOT be served publicly.**
 
 | Field | Type | Required | Description |
 |---|---|---|---|
@@ -350,6 +350,9 @@ Each item in `formDefinition.fields`.
 | `mappingVersion` | string | MUST | Version of this mapping record (e.g. `"v1"`). |
 | `generatedAt` | string (date-time) | MUST | ISO 8601 generation timestamp. |
 | `steps` | MappingStep[] | MUST | Per-step execution definitions. At least 1 required. See [MappingStep](#10-executionmapping--step). |
+| `deploymentStatus` | string (enum) | MAY | Lifecycle state in the WBB Service: `draft`, `validated`, `deployed`, `deprecated`. Set by the WBB Service operator. |
+| `processId` | string \| null | MAY | GovStack ProcessDefinition ID assigned by the WBB Service on deployment. Null until `deploymentStatus=deployed`. |
+| `trigger` | object | MAY | How this process is initiated. See [Trigger](#trigger-object). Defaults to `api` if absent. |
 | `source` | object | MAY | Provenance: `generator`, `sourceFile`, `parserVersion`. |
 
 ---
@@ -362,7 +365,7 @@ Each item in `executionMapping.steps`. One entry per workflow step.
 |---|---|---|---|
 | `stepId` | string | MUST | Must match a `stepId` in the catalog workflow. Pattern: `^step_[a-z0-9_-]+$`. |
 | `action` | string (enum) | MUST | Execution action type. See table below. `custom` requires `connector`. |
-| `connector` | string \| null | SHOULD | n8n node identifier to invoke (e.g. `"http"`, `"email"`, `"form"`, `"approval"`). Required when `action=custom`. |
+| `connector` | string \| null | SHOULD | WBB Service action handler or integration to invoke (e.g. `"http"`, `"email"`, `"form"`, `"approval"`). WBB Service maps this to an n8n node internally. Required when `action=custom`. |
 | `inputMapping` | object | SHOULD | Key-value map: connector input parameter ← case context variable (e.g. `{"recipientEmail": "{{case.applicant.email}}"}`). |
 | `outputMapping` | object | SHOULD | Key-value map: case context variable ← connector output (e.g. `{"caseId": "{{case.id}}"}`). |
 | `retryPolicy` | object | MAY | Retry behavior on transient failure. `maxAttempts` (1–10), `backoffSeconds` (≥ 1). |
@@ -370,6 +373,15 @@ Each item in `executionMapping.steps`. One entry per workflow step.
 | `humanTask` | object | MAY | Human review task definition. `assigneeRole` (MUST), `dueDays` (MAY), `instructions` (MAY). |
 | `onFailure` | string (enum) | MAY | `escalate`: route to `manual_intervention`. `reject`: move case to rejected. `suspend`: pause pending external resolution. |
 | `notes` | string \| null | MAY | Implementation notes for this step. Not exposed at runtime. |
+
+### Trigger object
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `type` | string (enum) | MUST | Initiation method: `api` (case submission), `cron` (scheduled), `event` (prior process outcome). |
+| `cronExpression` | string \| null | MAY | Cron schedule (e.g. `"0 8 * * 1-5"`). Required when `type=cron`. |
+| `eventType` | string \| null | MAY | Event type (e.g. `"case.decided"`). Required when `type=event`. |
+| `eventSourceProcessId` | string \| null | MAY | `serviceId` of the source process. Used when `type=event`. |
 
 ### action values
 

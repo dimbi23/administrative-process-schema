@@ -2,7 +2,7 @@
 
 - **Specification:** Administrative Process Schema Standard
 - **Status:** Draft
-- **Current version:** 2.0.0-draft.4
+- **Current version:** 2.0.0-draft.5
 - **Maintainer:** Administrative Process Schema Working Group
 - **Last updated:** 2026-03-23
 

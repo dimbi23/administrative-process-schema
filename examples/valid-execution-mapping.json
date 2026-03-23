@@ -4,6 +4,14 @@
   "catalogSchemaVersion": "2.0.0",
   "mappingVersion": "v1",
   "generatedAt": "2026-03-23T09:00:00Z",
+  "deploymentStatus": "deployed",
+  "processId": "proc_mid_example_002_v1",
+  "trigger": {
+    "type": "api",
+    "cronExpression": null,
+    "eventType": null,
+    "eventSourceProcessId": null
+  },
   "steps": [
     {
       "stepId": "step_1",

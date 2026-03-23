@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog and the project follows Semantic Versioning.
 
+## [2.0.0-draft.5] - 2026-03-23
+
+### Added
+- **`examples/end-to-end-walkthrough.md`**: step-by-step walkthrough of the three-file derivation chain for `MID-EXAMPLE-002` — serviceId linking, catalogSchemaVersion anchor, step linkage, document type linkage, derivation chain diagram, and validator commands
+- **`schema-reference.md` §9**: `deploymentStatus`, `processId`, and `trigger` fields added to ExecutionMapping table; new Trigger object sub-table
+- **`2-conformance-and-governance.md`**: Execution Profile explicitly restricted to Internal Profile only; satellite ownership (portal team / WBB Service team) added to governance section
+
+### Changed
+- **`examples/valid-public.json`**: added `documentsRequired` with `CIN_COPY` and `DOMICILE_PROOF` entries — aligning catalog with form-definition field mappings; all three artifacts now form a coherent end-to-end example
+- **`examples/valid-execution-mapping.json`**: added `trigger` (type: api), `deploymentStatus: "deployed"`, and `processId` fields
+- **`schema-reference.md`**: corrected "n8n action" references to "WBB Service action" in Workflow §2 and stepType table §3; connector field description updated
+
+### Validated
+- All three `MID-EXAMPLE-002` example files pass `validate.js` end-to-end: `valid-public.json` (public), `valid-form-definition.json` (public + catalog), `valid-execution-mapping.json` (internal + catalog) — all exit 0
+
 ## [2.0.0-draft.4] - 2026-03-23
 
 ### Added
