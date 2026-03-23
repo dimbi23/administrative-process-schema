@@ -1,0 +1,170 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dimbinirina.dev/schemas/procedures/execution-mapping.schema.json",
+  "title": "Execution Mapping v1",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "serviceId",
+    "catalogSchemaVersion",
+    "mappingVersion",
+    "generatedAt",
+    "steps"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "serviceId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "catalogSchemaVersion": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "The catalog schemaVersion this mapping was derived from."
+    },
+    "mappingVersion": {
+      "type": "string",
+      "pattern": "^v?\\d+(\\.\\d+){0,2}$"
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "stepId",
+          "action"
+        ],
+        "properties": {
+          "stepId": {
+            "type": "string",
+            "pattern": "^step_[a-z0-9_-]+$",
+            "description": "Must match a stepId in the catalog workflow."
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "case_intake",
+              "document_check",
+              "inspection_schedule",
+              "payment_request",
+              "instruction_deliver",
+              "approval_checkpoint",
+              "decision_record",
+              "notification_send",
+              "document_deliver",
+              "case_archive",
+              "custom"
+            ],
+            "description": "Execution action type. See 5-workflow-execution-mapping.md §5.4 for semantics."
+          },
+          "connector": {
+            "type": ["string", "null"],
+            "description": "Identifier of the n8n node or connector to invoke (e.g. 'http', 'email', 'form'). Required when action is custom."
+          },
+          "inputMapping": {
+            "type": "object",
+            "description": "Key-value map from case context variables to connector input parameters.",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "outputMapping": {
+            "type": "object",
+            "description": "Key-value map from connector output to case context variables.",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "retryPolicy": {
+            "type": "object",
+            "properties": {
+              "maxAttempts": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 10
+              },
+              "backoffSeconds": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "additionalProperties": false
+          },
+          "timeout": {
+            "type": ["integer", "null"],
+            "minimum": 1,
+            "description": "Maximum execution time in seconds before the step is escalated."
+          },
+          "humanTask": {
+            "type": "object",
+            "description": "Defines a human review task for steps requiring manual intervention.",
+            "required": ["assigneeRole"],
+            "properties": {
+              "assigneeRole": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Role or group responsible for completing this task."
+              },
+              "dueDays": {
+                "type": ["integer", "null"],
+                "minimum": 1,
+                "description": "Number of working days before the task is considered overdue."
+              },
+              "instructions": {
+                "type": ["string", "null"],
+                "description": "Free-text instructions displayed to the assignee."
+              }
+            },
+            "additionalProperties": false
+          },
+          "onFailure": {
+            "type": "string",
+            "enum": [
+              "escalate",
+              "reject",
+              "suspend"
+            ],
+            "description": "Action to take on unrecoverable step failure. escalate: route to manual_intervention. reject: move case to rejected state. suspend: pause case pending external resolution."
+          },
+          "notes": {
+            "type": ["string", "null"],
+            "description": "Implementation notes for this step mapping. Not exposed at runtime."
+          }
+        },
+        "if": {
+          "properties": {
+            "action": { "const": "custom" }
+          }
+        },
+        "then": {
+          "required": ["connector"]
+        },
+        "additionalProperties": false
+      }
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "generator": {
+          "type": ["string", "null"]
+        },
+        "sourceFile": {
+          "type": ["string", "null"]
+        },
+        "parserVersion": {
+          "type": ["string", "null"]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

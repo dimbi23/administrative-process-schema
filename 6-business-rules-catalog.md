@@ -58,8 +58,9 @@ Each rule has:
 ## BR-008 — Publishable review status
 - **Level:** MUST
 - **Profile:** Public API
-- **Expression:** `workflow.reviewStatus in {"approved_auto", "review_required"}` according to governance policy
+- **Expression:** `workflow.reviewStatus == "approved_auto"`
 - **Failure action:** BLOCK publication
+- **Note:** `review_required` is an internal-profile state only. A record with `reviewStatus=review_required` is valid in the Internal Profile but MUST NOT be published to the Public API Profile.
 
 ## BR-009 — Blocking quality flags resolved
 - **Level:** MUST
@@ -71,4 +72,10 @@ Each rule has:
 - **Level:** SHOULD
 - **Profile:** Public API
 - **Expression:** if any `stepType == "payment"`, `fee.model != "unknown"`
-- **Failure action:** WARNING or BLOCK (policy-controlled)
+- **Failure action:** WARNING (default); escalate to BLOCK if payment step has `requiresPayment: true`
+
+## BR-011 — Satellite referential integrity
+- **Level:** MUST
+- **Profile:** Both (applies to satellite schemas)
+- **Expression:** `serviceId` in any satellite record (`form-definition` or `execution-mapping`) MUST match a `serviceId` present in the procedure catalog
+- **Failure action:** INVALID satellite record; BLOCK satellite publication

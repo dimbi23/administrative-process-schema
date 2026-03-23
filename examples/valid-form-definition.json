@@ -1,0 +1,113 @@
+{
+  "schemaVersion": "1.0.0",
+  "serviceId": "MID-EXAMPLE-002",
+  "catalogSchemaVersion": "2.0.0",
+  "generatedAt": "2026-03-23T09:00:00Z",
+  "version": "v1",
+  "sections": [
+    {
+      "sectionId": "section_identity",
+      "label": "Identité du demandeur",
+      "order": 1
+    },
+    {
+      "sectionId": "section_documents",
+      "label": "Pièces justificatives",
+      "order": 2
+    }
+  ],
+  "fields": [
+    {
+      "fieldId": "field_nom",
+      "type": "text",
+      "label": "Nom complet",
+      "required": true,
+      "order": 1,
+      "sectionId": "section_identity",
+      "validation": {
+        "minLength": 2,
+        "maxLength": 100
+      },
+      "mapsToWorkflowStepId": "step_1"
+    },
+    {
+      "fieldId": "field_cin",
+      "type": "text",
+      "label": "Numéro CIN",
+      "description": "Carte d'identité nationale",
+      "required": true,
+      "order": 2,
+      "sectionId": "section_identity",
+      "validation": {
+        "pattern": "^[0-9]{12}$"
+      },
+      "mapsToWorkflowStepId": "step_1"
+    },
+    {
+      "fieldId": "field_type_demandeur",
+      "type": "select",
+      "label": "Type de demandeur",
+      "required": true,
+      "order": 3,
+      "sectionId": "section_identity",
+      "options": [
+        { "value": "individu", "label": "Particulier" },
+        { "value": "entreprise", "label": "Entreprise" },
+        { "value": "association", "label": "Association" }
+      ],
+      "mapsToWorkflowStepId": "step_1"
+    },
+    {
+      "fieldId": "field_num_stat",
+      "type": "text",
+      "label": "Numéro STAT",
+      "description": "Numéro statistique de l'entreprise",
+      "required": true,
+      "order": 4,
+      "sectionId": "section_identity",
+      "condition": {
+        "fieldId": "field_type_demandeur",
+        "operator": "equals",
+        "value": "entreprise"
+      },
+      "validation": {
+        "minLength": 8
+      },
+      "mapsToWorkflowStepId": "step_1"
+    },
+    {
+      "fieldId": "field_doc_cin",
+      "type": "file",
+      "label": "Copie de la CIN",
+      "required": true,
+      "order": 5,
+      "sectionId": "section_documents",
+      "fileConstraints": {
+        "acceptedTypes": ["application/pdf", "image/jpeg", "image/png"],
+        "maxSizeKb": 2048,
+        "multiple": false
+      },
+      "mapsToDocumentTypeCode": "CIN_COPY",
+      "mapsToWorkflowStepId": "step_1"
+    },
+    {
+      "fieldId": "field_doc_justificatif",
+      "type": "file",
+      "label": "Justificatif de domicile",
+      "required": false,
+      "order": 6,
+      "sectionId": "section_documents",
+      "fileConstraints": {
+        "acceptedTypes": ["application/pdf", "image/jpeg", "image/png"],
+        "maxSizeKb": 2048,
+        "multiple": false
+      },
+      "mapsToDocumentTypeCode": "DOMICILE_PROOF",
+      "mapsToWorkflowStepId": "step_1"
+    }
+  ],
+  "source": {
+    "generator": "manual",
+    "parserVersion": "1.0.0"
+  }
+}

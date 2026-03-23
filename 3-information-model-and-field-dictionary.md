@@ -18,8 +18,18 @@ Rule-level conditional constraints are enforced by schema logic: `fixed` rules r
 
 ## 3.4 Documents model
 
-Each `documentsRequired[]` entry SHOULD include `documentTypeCode`, `label`, and `requirementLevel`, and MAY include `condition` when a requirement is context-dependent.
+Each `documentsRequired[]` entry MUST include `documentTypeCode`, `label`, and `requirementLevel`. It MAY include `condition` when a requirement is context-dependent, `sourceText` for traceability, and `confidence` to indicate normalization quality.
 
 ## 3.5 Business consistency rules (core)
 
-Beyond structural schema checks, implementations MUST enforce a small set of consistency rules. The `fee.summary.ruleCount` value MUST match the number of items in `fee.rules`. Monetary values MUST be greater than or equal to zero, and where both minimum and maximum values are present, `maxAmount` MUST be greater than or equal to `minAmount`. As a policy rule, `status=active` SHOULD imply a non-empty and execution-ready workflow.
+This section provides a prose summary. The authoritative machine-testable form of these rules is the business rules catalog in `6-business-rules-catalog.md`. In case of conflict, the catalog is normative.
+
+Implementations MUST enforce: `fee.summary.ruleCount` matching the number of items in `fee.rules` (BR-005), monetary values greater than or equal to zero (BR-006), and `maxAmount >= minAmount` when both are present (BR-007). As a policy rule, `status=active` SHOULD imply a non-empty and execution-ready workflow (BR-001).
+
+## 3.6 Form definition model (satellite)
+
+The `form-definition` satellite schema defines the citizen-facing form fields derived from a procedure. Each form definition record is linked to a catalog record by `serviceId`. The information model for form fields — including field types, validation constraints, conditional display logic, and document upload constraints — is defined in `./schema/form-definition.schema.json`.
+
+## 3.7 Execution mapping model (satellite)
+
+The `execution-mapping` satellite schema defines how each workflow step maps to an executable action in the orchestration engine. Each execution mapping record is linked to a catalog record by `serviceId` and provides per-step fields such as action type, connector reference, input/output mapping, retry policy, and human task configuration. The full field dictionary for execution mappings is defined in `./schema/execution-mapping.schema.json` and its prose companion in `5-workflow-execution-mapping.md`.

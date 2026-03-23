@@ -1,0 +1,78 @@
+{
+  "schemaVersion": "1.0.0",
+  "serviceId": "MID-EXAMPLE-002",
+  "catalogSchemaVersion": "2.0.0",
+  "mappingVersion": "v1",
+  "generatedAt": "2026-03-23T09:00:00Z",
+  "steps": [
+    {
+      "stepId": "step_1",
+      "action": "case_intake",
+      "connector": "form",
+      "inputMapping": {
+        "applicantName": "{{field_nom}}",
+        "applicantId": "{{field_cin}}",
+        "applicantType": "{{field_type_demandeur}}"
+      },
+      "outputMapping": {
+        "caseId": "{{case.id}}",
+        "submittedAt": "{{case.createdAt}}"
+      },
+      "retryPolicy": {
+        "maxAttempts": 3,
+        "backoffSeconds": 5
+      },
+      "timeout": 300,
+      "onFailure": "suspend",
+      "notes": "Registers the incoming case and assigns a caseId. Form fields are validated before intake."
+    },
+    {
+      "stepId": "step_2",
+      "action": "document_check",
+      "connector": "http",
+      "inputMapping": {
+        "caseId": "{{case.id}}",
+        "cinCopy": "{{field_doc_cin}}",
+        "domicileProof": "{{field_doc_justificatif}}"
+      },
+      "outputMapping": {
+        "verificationResult": "{{step.output.result}}",
+        "verificationNotes": "{{step.output.notes}}"
+      },
+      "humanTask": {
+        "assigneeRole": "agent_verificateur",
+        "dueDays": 3,
+        "instructions": "Vérifier la conformité des pièces soumises avec les exigences de la procédure MID-EXAMPLE-002."
+      },
+      "retryPolicy": {
+        "maxAttempts": 2,
+        "backoffSeconds": 30
+      },
+      "onFailure": "escalate",
+      "notes": "Manual document verification by an assigned agent. Automated pre-check runs first; human review required if pre-check confidence is low."
+    },
+    {
+      "stepId": "step_3",
+      "action": "notification_send",
+      "connector": "email",
+      "inputMapping": {
+        "recipientEmail": "{{case.applicant.email}}",
+        "caseId": "{{case.id}}",
+        "decisionStatus": "{{step_2.output.verificationResult}}"
+      },
+      "outputMapping": {
+        "notificationSentAt": "{{step.output.sentAt}}"
+      },
+      "retryPolicy": {
+        "maxAttempts": 5,
+        "backoffSeconds": 60
+      },
+      "onFailure": "escalate",
+      "notes": "Sends decision notification to the applicant by email. SMS fallback is handled by the connector configuration."
+    }
+  ],
+  "source": {
+    "generator": "manual",
+    "parserVersion": "1.0.0"
+  }
+}
