@@ -87,7 +87,7 @@
         "maxSizeKb": 2048,
         "multiple": false
       },
-      "mapsToDocumentTypeCode": "CIN_COPY",
+      "mapsToDocumentTypeCode": "DOC_ID_CIN",
       "mapsToWorkflowStepId": "step_1"
     },
     {
@@ -102,7 +102,7 @@
         "maxSizeKb": 2048,
         "multiple": false
       },
-      "mapsToDocumentTypeCode": "DOMICILE_PROOF",
+      "mapsToDocumentTypeCode": "DOC_RES_CERT",
       "mapsToWorkflowStepId": "step_1"
     }
   ],

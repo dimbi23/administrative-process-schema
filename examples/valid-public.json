@@ -41,14 +41,14 @@
   },
   "documentsRequired": [
     {
-      "documentTypeCode": "CIN_COPY",
-      "label": "Copie de la carte d'identité nationale",
+      "documentTypeCode": "DOC_ID_CIN",
+      "label": "Carte d'identité nationale",
       "requirementLevel": "required",
       "confidence": "auto_high"
     },
     {
-      "documentTypeCode": "DOMICILE_PROOF",
-      "label": "Justificatif de domicile (moins de 3 mois)",
+      "documentTypeCode": "DOC_RES_CERT",
+      "label": "Certificat de résidence",
       "requirementLevel": "optional",
       "confidence": "auto_high"
     }

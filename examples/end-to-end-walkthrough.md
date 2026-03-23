@@ -76,12 +76,12 @@ step_3  → notification_send (connector: email)
 
 ```
 Catalog documentsRequired
-  CIN_COPY       "Copie de la carte d'identité nationale"   required
-  DOMICILE_PROOF "Justificatif de domicile"                 optional
+  DOC_ID_CIN   "Carte d'identité nationale"   required
+  DOC_RES_CERT "Certificat de résidence"       optional
 
 Form fields
-  field_doc_cin          mapsToDocumentTypeCode: "CIN_COPY"
-  field_doc_justificatif mapsToDocumentTypeCode: "DOMICILE_PROOF"
+  field_doc_cin          mapsToDocumentTypeCode: "DOC_ID_CIN"
+  field_doc_justificatif mapsToDocumentTypeCode: "DOC_RES_CERT"
 ```
 
 The portal form renderer uses these links to display the correct label and upload requirement level alongside each file field.
